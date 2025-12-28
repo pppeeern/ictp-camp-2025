@@ -5,6 +5,15 @@
   --font-thai: "IBM Plex Sans Thai", sans-serif;
 }
 
+#landing {
+  background-color: #198e8b;
+  background-image: url(/landing/cyan-bg.webp);
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: scroll;
+}
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;

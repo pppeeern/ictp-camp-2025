@@ -27,44 +27,65 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col">
-      <div className="h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8]">
-        <div className="w-full flex justify-between items-center gap-4 px-5 md:px-10 lg:px-15 pt-15 lg:pt-20">
-          <img
-            className="w-12"
-            src="https://www.bj.ac.th/web/assets/images/BJ_LOGO_RE_2563_ENG.png"
-            alt="BJ Logo"
-          />
-          {/* <div className="w-2xl h-14 flex items-center justify-center rounded-3xl bg-linear-to-b from-[#d3f0f0] to-[#8CC0C5] backdrop-blur-lg shadow-lg p-0.5 overflow-hidden">
-            <div className="rounded-3xl h-full w-full px-6 flex items-center justify-around bg-linear-to-b from-[#517a7e] to-[#628e96]">
-              {nav.map(({ name }, index) => (
-                <div
-                  key={index}
-                  className="text-white text-lg text-shadow-md cursor-pointer transition-colors duration-150 hover:text-gray-300"
-                >
-                  {name}
-                </div>
-              ))}
+    <div>
+      <div className="fixed z-50 w-full flex justify-between items-center gap-4 px-5 md:px-10 lg:px-15 pt-15">
+        <img
+          className="w-12"
+          src="https://www.bj.ac.th/web/assets/images/BJ_LOGO_RE_2563_ENG.png"
+          alt="BJ Logo"
+        />
+        <div className="w-2xl h-14 rounded-3xl backdrop-blur-lg md:px-4 lg:px-6 flex items-center justify-around bg-linear-to-b from-[#395c69bb] via-[#518696cc] to-[#6a9fa3] border-t border-t-white/60 border-l-2 border-l-white/40 border-r border-r-white/40 border-b border-b-white/30 shadow-lg">
+          {nav.map(({ name }, index) => (
+            <div
+              key={index}
+              className="text-white text-lg text-shadow-md cursor-pointer transition-colors duration-150 hover:text-gray-300"
+            >
+              {name}
             </div>
-          </div> */}
-          <div className="w-2xl h-14 rounded-3xl backdrop-blur-lg md:px-4 lg:px-6 flex items-center justify-around bg-linear-to-b from-[#395c69bb] via-[#518696cc] to-[#6a9fa3] border-t border-t-white/60 border-l-2 border-l-white/40 border-r border-r-white/40 border-b border-b-white/30 shadow-lg">
-            {nav.map(({ name }, index) => (
-              <div
-                key={index}
-                className="text-white text-lg text-shadow-md cursor-pointer transition-colors duration-150 hover:text-gray-300"
-              >
-                {name}
-              </div>
-            ))}
-          </div>
-          <div className="relative flex flex-col items-center rounded-full w-14 aspect-square bg-linear-to-b from-[#518696] to-[#6a9fa3] border border-white/60">
-            <Link href="/login" className="absolute bottom-0 translate-y-12 flex justify-center items-center rounded-xl h-8 w-24 bg-[#C12882] text-white text-center shadow-lg cursor-pointer animate-bounce">
-              เข้าสู่ระบบ!
-            </Link>
-          </div>
+          ))}
+        </div>
+        <div className="relative flex flex-col items-center rounded-full w-14 aspect-square bg-linear-to-b from-[#518696] to-[#6a9fa3] border border-white/60">
+          <Link
+            href="/login"
+            className="absolute bottom-0 translate-y-12 flex justify-center items-center rounded-xl h-8 w-24 bg-[#C12882] text-white text-center shadow-lg cursor-pointer animate-bounce"
+          >
+            เข้าสู่ระบบ!
+          </Link>
         </div>
       </div>
-      {/* <div className="min-h-screen flex flex-col justify-center items-center pt-10">
+      <div
+        id="landing"
+        className="relative flex flex-col items-center justify-center h-screen overflow-hidden"
+      >
+        <div className="z-20 mt-45 size-100 md:size-140 xl:mt-50 xl:size-160 2xl:mt-60 2xl:size-180">
+          <img
+            draggable="false"
+            src="/landing/camp-logo_1.webp"
+            alt="camp-logo"
+          />
+        </div>
+        <img
+          className="w-[350px] md:w-[450px] lg:w-[650px] top-1/2 translate-y-[calc(-50%-260px)] absolute -left-30"
+          src="/landing/cloud-l.webp"
+          alt="cloud-left"
+        />
+        <img
+          className="w-[350px] md:w-[450px] lg:w-[650px] top-1/2 translate-y-[calc(-50%-260px)] absolute -right-30"
+          src="/landing/cloud-r.webp"
+          alt="cloud-right"
+        />
+        <img
+          className="w-[350px] md:w-[450px] lg:w-[650px] top-1/2 translate-y-[calc(50%-50px)] md:translate-y-[calc(50%-200px)] lg:translate-y-[calc(50%-400px)] absolute -left-20 md:-left-25"
+          src="/landing/rock-l.webp"
+          alt="rock-left"
+        />
+        <img
+          className="w-[350px] md:w-[450px] lg:w-[600px] top-1/2 translate-y-[calc(50%-50px)] md:translate-y-[calc(50%-150px)] lg:translate-y-[calc(50%-350px)] absolute -right-20 md:-right-25"
+          src="/landing/rock-r.webp"
+          alt="rock-right"
+        />
+      </div>
+      <div className="hidden min-h-screen flex flex-col justify-center items-center pt-10">
         <h2 className="text-2xl font-bold">กำหนดการ</h2>
         <div className="w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {sched.map(({ date, month, title }, index) => (
@@ -79,8 +100,11 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </div> */}
-      <div className="min-h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center gap-15 pt-12">
+      </div>
+      <div
+        id="sports"
+        className="min-h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center gap-15 pt-12 hidden"
+      >
         <div className="w-full pt-14 flex flex-col items-center justify-end">
           <div className="bg-amber-50 rounded-lg px-12 pt-4 pb-2">
             <h2 className="text-6xl font-bold">กีฬา</h2>
@@ -102,7 +126,10 @@ export default function Home() {
           ))}
         </div>
       </div>
-      <div className="h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center pt-12">
+      <div
+        id="competitions"
+        className="h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center pt-20"
+      >
         <div className="w-full pt-14 flex flex-col items-center justify-end">
           <div className="bg-amber-50 rounded-lg px-12 pt-4 pb-2">
             <h2 className="text-6xl font-bold">การแข่งขัน</h2>
