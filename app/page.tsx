@@ -23,6 +23,8 @@ const comp = [
   },
 ];
 
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="flex flex-col">
@@ -56,9 +58,9 @@ export default function Home() {
             ))}
           </div>
           <div className="relative flex flex-col items-center rounded-full w-14 aspect-square bg-linear-to-b from-[#518696] to-[#6a9fa3] border border-white/60">
-            <div className="absolute bottom-0 translate-y-12 flex justify-center items-center rounded-xl h-8 w-24 bg-[#C12882] text-white text-center shadow-lg cursor-pointer animate-bounce">
+            <Link href="/login" className="absolute bottom-0 translate-y-12 flex justify-center items-center rounded-xl h-8 w-24 bg-[#C12882] text-white text-center shadow-lg cursor-pointer animate-bounce">
               เข้าสู่ระบบ!
-            </div>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,0 +1,117 @@
+'use server'
+ 
+import { signIn } from '@/auth'
+import { AuthError } from 'next-auth'
+import { z } from 'zod'
+import bcrypt from 'bcryptjs'
+import { supabase } from '@/app/lib/supabase'
+
+const FormSchema = z.object({
+  studentId: z.string().min(1, 'กรุณาระบุรหัสนักเรียน'),
+  pin: z.string().length(6, 'PIN ต้องเป็นตัวเลข 6 หลัก'),
+  confirmPin: z.string().length(6, 'PIN ต้องเป็นตัวเลข 6 หลัก'),
+}).refine((data) => data.pin === data.confirmPin, {
+  message: "รหัส PIN ไม่ตรงกัน",
+  path: ["confirmPin"],
+});
+
+export type RegisterState = {
+  errors?: {
+    studentId?: string[];
+    pin?: string[];
+    confirmPin?: string[];
+  };
+  message?: string | null;
+};
+
+export async function register(prevState: RegisterState | null, formData: FormData): Promise<RegisterState> {
+  const validatedFields = FormSchema.safeParse({
+    studentId: formData.get('studentId'),
+    pin: formData.get('pin'),
+    confirmPin: formData.get('confirmPin'),
+  })
+ 
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'กรุณากรอกข้อมูลให้ถูกต้องครบถ้วน'
+    };
+  }
+ 
+  const { studentId, pin } = validatedFields.data;
+  
+  try {
+    const { data: existingStudent, error: fetchError } = await supabase
+      .from('students')
+      .select('*')
+      .eq('student_id', studentId)
+      .maybeSingle()
+
+    if (fetchError) {
+        console.error('Supabase fetch error:', fetchError);
+        return { message: 'เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล' };
+    }
+
+    if (!existingStudent) {
+        return { message: 'ไม่พบข้อมูลนักเรียนในระบบ' };
+    }
+
+    if (existingStudent.pin) {
+        return { message: 'บัญชีนี้ถูกลงทะเบียนแล้ว กรุณาไปที่หน้าเข้าสู่ระบบ' };
+    }
+
+    const hashedPassword = await bcrypt.hash(pin, 10);
+
+    const { error } = await supabase
+      .from('students')
+      .update({ pin: hashedPassword })
+      .eq('id', existingStudent.id)
+
+    if (error) {
+        console.error('Supabase update error:', error)
+        throw new Error('ไม่สามารถอัปเดตข้อมูลได้')
+    }
+
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return { message: 'เกิดข้อผิดพลาดบางอย่าง' };
+  }
+
+  try {
+    await signIn('credentials', {
+        studentId,
+        pin,
+        redirectTo: '/',
+    })
+    return { message: null };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return { message: 'ข้อมูลไม่ถูกต้อง' };
+        default:
+          return { message: 'เกิดข้อผิดพลาดบางอย่าง' };
+      }
+    }
+    throw error
+  }
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData)
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'ข้อมูลไม่ถูกต้อง'
+        default:
+          return 'เกิดข้อผิดพลาดบางอย่าง'
+      }
+    }
+    throw error
+  }
+}
