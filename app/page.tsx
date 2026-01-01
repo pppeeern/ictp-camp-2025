@@ -1,9 +1,4 @@
-const nav = [
-  { name: "กำหนดการ", href: "/" },
-  { name: "กีฬา", href: "/" },
-  { name: "การแข่งขัน", href: "/" },
-  { name: "อันดับ", href: "/" },
-];
+import Navigation from "./components/Navigation";
 
 const sched = [
   { date: 5, month: "DEC", title: "ลงทะเบียนการแข่งขัน" },
@@ -16,46 +11,49 @@ const sports = [{ name: "ฟุตบอลประเพณี" }, { name: "�
 
 const comp = [
   {
-    name: "Zero Day Quest (ZDQ)",
+    name: "Zero Day Quest",
     tag: "ความปลอดภัยไซเบอร์",
+    logo: "/competitions/ZDQ.png",
+    des: "",
+    date: "13 มกราคม 2568",
+  },
+  {
+    name: "Pirate Frame",
+    tag: "อนิเมชัน",
+    logo: "/competitions/Pirate Frame.png",
+    des: "",
+    date: "13 มกราคม 2568",
+  },
+  {
+    name: "RoboMission",
+    tag: "หุ่นยนต์",
+    logo: "/competitions/",
+    des: "",
+    date: "13 มกราคม 2568",
+  },
+  {
+    name: "GenEn",
+    tag: "วิศวกรรม",
+    logo: "/competitions/GenEn.png",
+    des: "",
+    date: "13 มกราคม 2568",
+  },
+  {
+    name: "เย็นตาโฟโต้",
+    tag: "ถ่ายภาพ",
+    logo: "/competitions/",
     des: "",
     date: "13 มกราคม 2568",
   },
 ];
 
-import Link from "next/link";
-
 export default function Home() {
   return (
-    <div>
-      <div className="fixed z-50 w-full flex justify-between items-center gap-4 px-5 md:px-10 lg:px-15 pt-15">
-        <img
-          className="w-12"
-          src="https://www.bj.ac.th/web/assets/images/BJ_LOGO_RE_2563_ENG.png"
-          alt="BJ Logo"
-        />
-        <div className="w-2xl h-14 rounded-3xl backdrop-blur-lg md:px-4 lg:px-6 flex items-center justify-around bg-linear-to-b from-[#395c69bb] via-[#518696cc] to-[#6a9fa3] border-t border-t-white/60 border-l-2 border-l-white/40 border-r border-r-white/40 border-b border-b-white/30 shadow-lg">
-          {nav.map(({ name }, index) => (
-            <div
-              key={index}
-              className="text-white text-lg text-shadow-md cursor-pointer transition-colors duration-150 hover:text-gray-300"
-            >
-              {name}
-            </div>
-          ))}
-        </div>
-        <div className="relative flex flex-col items-center rounded-full w-14 aspect-square bg-linear-to-b from-[#518696] to-[#6a9fa3] border border-white/60">
-          <Link
-            href="/login"
-            className="absolute bottom-0 translate-y-12 flex justify-center items-center rounded-xl h-8 w-24 bg-[#C12882] text-white text-center shadow-lg cursor-pointer animate-bounce"
-          >
-            เข้าสู่ระบบ!
-          </Link>
-        </div>
-      </div>
+    <div className="overflow-hidden">
+      <Navigation />
       <div
         id="landing"
-        className="relative flex flex-col items-center justify-center h-screen overflow-hidden"
+        className="relative flex flex-col items-center justify-center h-screen"
       >
         <div className="z-20 mt-45 size-100 md:size-140 xl:mt-50 xl:size-160 2xl:mt-60 2xl:size-180">
           <img
@@ -128,15 +126,37 @@ export default function Home() {
       </div>
       <div
         id="competitions"
-        className="h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center pt-20"
+        className="relative min-h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center pt-25"
       >
+        <img
+          className="absolute z-10 w-full top-0 translate-y-[calc(-50%)]"
+          src="/landing/cloud-cover.png"
+          alt="cloud cover"
+        />
+        <img
+          className="w-[300px] md:w-[400px] lg:w-[500px] top-1/2 translate-y-[calc(-50%-280px)] absolute -left-30"
+          src="/landing/cloud-l_1.png"
+          alt="cloud-left"
+        />
+        <img
+          className="w-[300px] md:w-[400px] lg:w-[500px] top-1/2 translate-y-[calc(-50%-280px)] absolute -right-30"
+          src="/landing/cloud-r_1.png"
+          alt="cloud-right"
+        />
         <div className="w-full pt-14 flex flex-col items-center justify-end">
-          <div className="bg-amber-50 rounded-lg px-12 pt-4 pb-2">
-            <h2 className="text-6xl font-bold">การแข่งขัน</h2>
+          <div className="relative flex items-center justify-center w-full mt-5 mb-10">
+            <h2 className="text-6xl font-bold -translate-y-2 z-10">
+              การแข่งขัน
+            </h2>
+            <img
+              className="absolute w-120"
+              src="/landing/topic-sign.webp"
+              alt=""
+            />
           </div>
         </div>
         <div className="w-full h-full px-15 py-10 pb-36 grid md:grid-cols-5 gap-2">
-          {comp.map(({ name, tag, des, date }, index) => (
+          {comp.map(({ name, tag, logo, des }, index) => (
             <div
               key={index}
               className="flex flex-col items-center justify-between gap-8 py-8 px-6 bg-amber-100 rounded-xl"
@@ -145,23 +165,21 @@ export default function Home() {
                 <div className="w-full text-center text-2xl font-medium">
                   {name}
                 </div>
-                <div className="rounded-full px-6 py-1 text-white bg-[#10203A]">
+                <div className="rounded-full px-6 py-1 text-[#333e4e] bg-white">
                   {tag}
                 </div>
               </div>
-              <div className="flex flex-1"></div>
+              <div className="flex flex-1">
+                <img src={logo} alt={name} />
+              </div>
               <div className="flex flex-col items-center gap-2">
                 <div>{des}</div>
-                <div className="flex gap-4">
-                  <span>📅</span>
-                  <span>{date}</span>
-                </div>
               </div>
-              <div className="w-full grid grid-cols-2 gap-2">
-                <button className="rounded-full px-4 py-1 bg-[#f8f0f7] font-medium cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/5">
+              <div className="w-full flex">
+                {/* <button className="rounded-full px-4 lg:px-2 py-1 bg-[#f8f0f7] font-medium cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/5">
                   รายละเอียด
-                </button>
-                <button className="rounded-full px-4 py-1 bg-[#C12882] font-medium text-white cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/15">
+                </button> */}
+                <button className="w-full rounded-full px-4 lg:px-2 py-1 bg-[#C12882] font-medium text-white cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/15">
                   ลงทะเบียน
                 </button>
               </div>
