@@ -102,7 +102,14 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    await signIn('credentials', formData)
+    const studentId = formData.get('studentId');
+    const pin = formData.get('pin');
+    
+    await signIn('credentials', {
+        studentId,
+        pin,
+        redirectTo: '/',
+    })
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -113,5 +120,76 @@ export async function authenticate(
       }
     }
     throw error
+  }
+}
+
+const ChangePinSchema = z.object({
+  oldPin: z.string().length(6, 'PIN ต้องเป็นตัวเลข 6 หลัก'),
+  newPin: z.string().length(6, 'PIN ต้องเป็นตัวเลข 6 หลัก'),
+  confirmNewPin: z.string().length(6, 'PIN ต้องเป็นตัวเลข 6 หลัก'),
+}).refine((data) => data.newPin === data.confirmNewPin, {
+  message: "รหัส PIN ใหม่ไม่ตรงกัน",
+  path: ["confirmNewPin"],
+});
+
+export type ChangePinState = {
+  message?: string | null;
+  success?: boolean;
+};
+
+export async function changePin(
+  prevState: ChangePinState | null,
+  formData: FormData,
+) {
+  const session = await import("@/auth").then((mod) => mod.auth());
+  if (!session?.user?.studentId) {
+    return { message: 'กรุณาเข้าสู่ระบบ' };
+  }
+
+  const validatedFields = ChangePinSchema.safeParse({
+    oldPin: formData.get('oldPin'),
+    newPin: formData.get('newPin'),
+    confirmNewPin: formData.get('confirmNewPin'),
+  });
+
+  if (!validatedFields.success) {
+     const errorMessages = validatedFields.error.flatten().fieldErrors;
+     const firstError = Object.values(errorMessages).flat()[0];
+     return { message: firstError || 'ข้อมูลไม่ถูกต้อง' };
+  }
+
+  const { oldPin, newPin } = validatedFields.data;
+
+  try {
+     const { data: student, error: fetchError } = await supabase
+      .from('students')
+      .select('id, pin')
+      .eq('student_id', session.user.studentId)
+      .single();
+
+     if (fetchError || !student) {
+        return { message: 'ไม่พบข้อมูลผู้ใช้' };
+     }
+
+     const isPasswordValid = await bcrypt.compare(oldPin, student.pin);
+     if (!isPasswordValid) {
+        return { message: 'รหัส PIN เดิมไม่ถูกต้อง' };
+     }
+
+     const hashedNewPin = await bcrypt.hash(newPin, 10);
+     const { error: updateError } = await supabase
+       .from('students')
+       .update({ pin: hashedNewPin })
+       .eq('id', student.id);
+
+     if (updateError) {
+        return { message: 'ไม่สามารถเปลี่ยนรหัส PIN ได้' };
+     }
+
+     return { message: 'เปลี่ยนรหัส PIN สำเร็จ', success: true };
+
+  } catch (error) {
+     console.error('Change PIN error:', error);
+     return { message: 'เกิดข้อผิดพลาดบางอย่าง' };
   }
 }

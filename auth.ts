@@ -35,4 +35,18 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+        if (user) {
+            token.studentId = (user as { student_id: string }).student_id;
+        }
+        return token;
+    },
+    async session({ session, token }) {
+        if (token.studentId && session.user) {
+            (session.user as { studentId: string }).studentId = token.studentId as string;
+        }
+        return session;
+    }
+  }
 });

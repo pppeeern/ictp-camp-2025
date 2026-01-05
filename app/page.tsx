@@ -1,4 +1,6 @@
 import Navigation from "./components/Navigation";
+import Competitions from "./components/Competitions";
+import { auth } from "@/auth";
 
 const sched = [
   { date: 5, month: "DEC", title: "ลงทะเบียนการแข่งขัน" },
@@ -47,10 +49,11 @@ const comp = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
   return (
     <div className="overflow-hidden">
-      <Navigation />
+      <Navigation session={session} />
       <div
         id="landing"
         className="relative flex flex-col items-center justify-center h-screen"
@@ -124,69 +127,7 @@ export default function Home() {
           ))}
         </div>
       </div>
-      <div
-        id="competitions"
-        className="relative min-h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center pt-25"
-      >
-        <img
-          className="absolute z-10 w-full top-0 translate-y-[calc(-50%)]"
-          src="/landing/cloud-cover.png"
-          alt="cloud cover"
-        />
-        <img
-          className="w-[300px] md:w-[400px] lg:w-[500px] top-1/2 translate-y-[calc(-50%-280px)] absolute -left-30"
-          src="/landing/cloud-l_1.png"
-          alt="cloud-left"
-        />
-        <img
-          className="w-[300px] md:w-[400px] lg:w-[500px] top-1/2 translate-y-[calc(-50%-280px)] absolute -right-30"
-          src="/landing/cloud-r_1.png"
-          alt="cloud-right"
-        />
-        <div className="w-full pt-14 flex flex-col items-center justify-end">
-          <div className="relative flex items-center justify-center w-full mt-5 mb-10">
-            <h2 className="text-6xl font-bold -translate-y-2 z-10">
-              การแข่งขัน
-            </h2>
-            <img
-              className="absolute w-120"
-              src="/landing/topic-sign.webp"
-              alt=""
-            />
-          </div>
-        </div>
-        <div className="w-full h-full px-15 py-10 pb-36 grid md:grid-cols-5 gap-2">
-          {comp.map(({ name, tag, logo, des }, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center justify-between gap-8 py-8 px-6 bg-amber-100 rounded-xl"
-            >
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-full text-center text-2xl font-medium">
-                  {name}
-                </div>
-                <div className="rounded-full px-6 py-1 text-[#333e4e] bg-white">
-                  {tag}
-                </div>
-              </div>
-              <div className="flex flex-1">
-                <img src={logo} alt={name} />
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <div>{des}</div>
-              </div>
-              <div className="w-full flex">
-                {/* <button className="rounded-full px-4 lg:px-2 py-1 bg-[#f8f0f7] font-medium cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/5">
-                  รายละเอียด
-                </button> */}
-                <button className="w-full rounded-full px-4 lg:px-2 py-1 bg-[#C12882] font-medium text-white cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/15">
-                  ลงทะเบียน
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Competitions />
     </div>
   );
 }
