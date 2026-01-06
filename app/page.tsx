@@ -1,5 +1,4 @@
 import Navigation from "./components/Navigation";
-import Competitions from "./components/Competitions";
 import { auth } from "@/auth";
 import CompLanding from "./components/competitions/Comp_Landing";
 

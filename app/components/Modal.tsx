@@ -46,7 +46,7 @@ export default function Modal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`${style} ${
+        className={`relative transition-all duration-150 drop-shadow-2xl drop-shadow-black/40 ${style} ${
           isOpen
             ? "translate-y-0 scale-100 opacity-100"
             : "-translate-y-16 scale-75 opacity-0"

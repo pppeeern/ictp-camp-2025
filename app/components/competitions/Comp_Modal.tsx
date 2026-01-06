@@ -43,7 +43,7 @@ export default function CompModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      style="relative grid grid-cols-[35%_1fr] justify-center w-3/4 h-3/4 max-h-3/4 transition-all duration-150 drop-shadow-2xl drop-shadow-black/40"
+      style="relative grid grid-cols-[35%_1fr] justify-center w-3/4 h-3/4 max-h-3/4"
     >
       {page == 1 ? (
         <CompDetailModal comp_index={comp_index} onSwitch={onSwitch} />
