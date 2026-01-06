@@ -1,6 +1,7 @@
 import Navigation from "./components/Navigation";
 import Competitions from "./components/Competitions";
 import { auth } from "@/auth";
+import CompLanding from "./components/competitions/Comp_Landing";
 
 const sched = [
   { date: 5, month: "DEC", title: "ลงทะเบียนการแข่งขัน" },
@@ -10,44 +11,6 @@ const sched = [
 ];
 
 const sports = [{ name: "ฟุตบอลประเพณี" }, { name: "แชร์บอลทางน้ำ" }];
-
-const comp = [
-  {
-    name: "Zero Day Quest",
-    tag: "ความปลอดภัยไซเบอร์",
-    logo: "/competitions/ZDQ.png",
-    des: "",
-    date: "13 มกราคม 2568",
-  },
-  {
-    name: "Pirate Frame",
-    tag: "อนิเมชัน",
-    logo: "/competitions/Pirate Frame.png",
-    des: "",
-    date: "13 มกราคม 2568",
-  },
-  {
-    name: "RoboMission",
-    tag: "หุ่นยนต์",
-    logo: "/competitions/",
-    des: "",
-    date: "13 มกราคม 2568",
-  },
-  {
-    name: "GenEn",
-    tag: "วิศวกรรม",
-    logo: "/competitions/GenEn.png",
-    des: "",
-    date: "13 มกราคม 2568",
-  },
-  {
-    name: "เย็นตาโฟโต้",
-    tag: "ถ่ายภาพ",
-    logo: "/competitions/",
-    des: "",
-    date: "13 มกราคม 2568",
-  },
-];
 
 export default async function Home() {
   const session = await auth();
@@ -66,22 +29,22 @@ export default async function Home() {
           />
         </div>
         <img
-          className="w-[350px] md:w-[450px] lg:w-[650px] top-1/2 translate-y-[calc(-50%-260px)] absolute -left-30"
+          className="w-87.5 md:w-112.5 lg:w-162.5 top-1/2 translate-y-[calc(-50%-260px)] absolute -left-30"
           src="/landing/cloud-l.webp"
           alt="cloud-left"
         />
         <img
-          className="w-[350px] md:w-[450px] lg:w-[650px] top-1/2 translate-y-[calc(-50%-260px)] absolute -right-30"
+          className="w-87.5 md:w-112.5 lg:w-162.5 top-1/2 translate-y-[calc(-50%-260px)] absolute -right-30"
           src="/landing/cloud-r.webp"
           alt="cloud-right"
         />
         <img
-          className="w-[350px] md:w-[450px] lg:w-[650px] top-1/2 translate-y-[calc(50%-50px)] md:translate-y-[calc(50%-200px)] lg:translate-y-[calc(50%-400px)] absolute -left-20 md:-left-25"
+          className="w-87.5 md:w-112.5 lg:w-162.5 top-1/2 translate-y-[calc(50%-50px)] md:translate-y-[calc(50%-200px)] lg:translate-y-[calc(50%-400px)] absolute -left-20 md:-left-25"
           src="/landing/rock-l.webp"
           alt="rock-left"
         />
         <img
-          className="w-[350px] md:w-[450px] lg:w-[600px] top-1/2 translate-y-[calc(50%-50px)] md:translate-y-[calc(50%-150px)] lg:translate-y-[calc(50%-350px)] absolute -right-20 md:-right-25"
+          className="w-87.5 md:w-112.5 lg:w-150 top-1/2 translate-y-[calc(50%-50px)] md:translate-y-[calc(50%-150px)] lg:translate-y-[calc(50%-350px)] absolute -right-20 md:-right-25"
           src="/landing/rock-r.webp"
           alt="rock-right"
         />
@@ -104,7 +67,7 @@ export default async function Home() {
       </div>
       <div
         id="sports"
-        className="min-h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center gap-15 pt-12 hidden"
+        className="hidden min-h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center gap-15 pt-12"
       >
         <div className="w-full pt-14 flex flex-col items-center justify-end">
           <div className="bg-amber-50 rounded-lg px-12 pt-4 pb-2">
@@ -127,7 +90,7 @@ export default async function Home() {
           ))}
         </div>
       </div>
-      <Competitions />
+      <CompLanding />
     </div>
   );
 }

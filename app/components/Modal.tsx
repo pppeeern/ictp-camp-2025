@@ -2,34 +2,19 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 
-const XIcon = ({ size = 24 }: { size?: number }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M18 6 6 18" />
-    <path d="m6 6 12 12" />
-  </svg>
-);
-
 export default function Modal({
-  title,
   children,
+  style,
   isOpen,
   onClose,
 }: {
-  title: string;
   children: React.ReactNode;
+  style?: string;
   isOpen: boolean;
   onClose: () => void;
 }) {
+  if (typeof window == "undefined") return;
+
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -43,8 +28,8 @@ export default function Modal({
       document.body.style.overflow = "auto";
     }
     return () => {
-        document.body.style.overflow = "auto";
-    }
+      document.body.style.overflow = "auto";
+    };
   }, [isOpen]);
 
   if (!mounted || typeof window === "undefined") return null;
@@ -53,24 +38,32 @@ export default function Modal({
   return createPortal(
     <div
       onClick={onClose}
-      className={`fixed inset-0 z-50 w-screen h-screen flex items-center justify-center transition-all duration-100 bg-black/40 backdrop-blur-xs`}
+      className={`fixed inset-0 z-50 w-screen h-screen flex items-center justify-center transition-all duration-100 ${
+        isOpen
+          ? "bg-black/40 backdrop-blur-xs opacity-100"
+          : "backdrop-blur-md opacity-0"
+      }`}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`relative flex flex-col justify-center bg-white rounded-lg max-w-2xl w-full mx-4 pt-6 pb-5 shadow-xl animate-in fade-in zoom-in-95 duration-200`}
+        className={`${style} ${
+          isOpen
+            ? "translate-y-0 scale-100 opacity-100"
+            : "-translate-y-16 scale-75 opacity-0"
+        }`}
       >
         <button
           onClick={onClose}
-          className="absolute p-1 cursor-pointer top-3 right-4 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-200"
+          className="absolute p-1 cursor-pointer top-6 right-6 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-200"
         >
-          <XIcon size={20} />
+          <img
+            draggable="false"
+            className="w-14 cursor-pointer hover:brightness-95 transition-all duration-100"
+            src="/button/close-button.png"
+            alt="close"
+          />
         </button>
-        <h1 className="px-5 text-xl text-center font-bold text-[#1E6C74] mb-2">{title}</h1>
-        <div className="w-full border-b border-gray-200 mb-4"></div>
-        
-        <div className="px-5 md:px-8 max-h-[70vh] overflow-y-auto">
-            {children}
-        </div>
+        {children}
       </div>
     </div>,
     document.body

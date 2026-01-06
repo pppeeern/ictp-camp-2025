@@ -1,0 +1,90 @@
+import { ReactElement } from "react";
+
+export type compType = {
+  name: string;
+  tag: string;
+  logo: string;
+  des: string;
+  req: ReactElement;
+  min: number;
+  max: number;
+  date: string;
+};
+
+export const compdata = [
+  {
+    name: "Zero Day Quest",
+    tag: "ความปลอดภัยไซเบอร์",
+    logo: "/competitions/ZDQ.png",
+    des: `การแข่งขันด้านความปลอดภัยทางไซเบอร์ ในรูปแบบ CTF (Capture The Flag) ประเภท Jeopardy`,
+    req: (
+      <p>
+        1. นักเรียนชั้นมัธยมศึกษาปีที่ 4-5 <br />
+        2. ประเภททีม ทีมละ 3-5 คน สีละ 1 ทีม
+      </p>
+    ),
+    min: 3,
+    max: 5,
+    date: "13 มกราคม 2568",
+  },
+  {
+    name: "Pirate Frame",
+    tag: "อนิเมชัน",
+    logo: "/competitions/Pirate Frame.png",
+    des: `การแข่งขันสร้างแอนิเมชัน 2 มิติ ในธีมโจรสลัด ตามหัวข้อที่กำหนด`,
+    req: (
+      <p>
+        1. นักเรียนชั้นมัธยมศึกษาปีที่ 4-5 <br />
+        2. ประเภททีม ทีมละ 3 คน สีละ 1 ทีม
+      </p>
+    ),
+    min: 3,
+    max: 3,
+    date: "13-14 มกราคม 2568",
+  },
+  {
+    name: "RoboMission",
+    tag: "หุ่นยนต์",
+    logo: "/competitions/RoboMission.png",
+    des: `การแข่งขันหุ่นยนต์อัตโนมัติ หุ่นยนต์ PT ในสนามภารกิจ "เกาะแห่งอำพัน"`,
+    req: (
+      <p>
+        1. นักเรียนชั้นมัธยมศึกษาปีที่ 4-5 <br />
+        2. ประเภททีม ทีมละ 5 คน สีละ 1 ทีม
+      </p>
+    ),
+    min: 5,
+    max: 5,
+    date: "14 มกราคม 2568",
+  },
+  {
+    name: "GenEn",
+    tag: "วิศวกรรม",
+    logo: "/competitions/GenEn.png",
+    des: `การแข่งขันตอบปัญหาเชิงวิศวกรรม ในรูปแบบเกมโชว์`,
+    req: (
+      <p>
+        1. นักเรียนชั้นมัธยมศึกษาปีที่ 4-5 <br />
+        2. ประเภททีม ทีมละ 4 คน สีละ 2 ทีม
+      </p>
+    ),
+    min: 4,
+    max: 4,
+    date: "14 มกราคม 2568",
+  },
+  {
+    name: "เย็นตาโฟโต้",
+    tag: "ถ่ายภาพ",
+    logo: "/competitions/YenTaPhoto.png",
+    des: `การประกวดภาพถ่าย ในหัวข้อ “บันทึกระว่างทาง” และ “ภาพนี้คืออะไร??”`,
+    req: (
+      <p>
+        1. นักเรียนชั้นมัธยมศึกษาปีที่ 4-6 <br />
+        2. ประเภทเดี่ยว ไม่จำกัดสี
+      </p>
+    ),
+    min: 0,
+    max: 100,
+    date: "13-14 มกราคม 2568",
+  },
+];
