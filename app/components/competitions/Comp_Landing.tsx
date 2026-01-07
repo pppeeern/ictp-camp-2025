@@ -1,17 +1,24 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { compdata as comp } from "./Comp_Data";
 import CompModal from "./Comp_Modal";
 import { StudentType } from "../account/AccountData";
+import { Session } from "next-auth";
+import LoginFirstModal from "../account/LoginFirstModal";
 
 export default function CompLanding({
+  session,
   student,
 }: {
+  session?: Session | null;
   student: StudentType | null;
 }) {
   const [selectComp, setSelectComp] = useState<number>(-1);
   const [modalPage, setModalPage] = useState<number>(1);
+
+  console.log(modalPage);
+  useEffect(() => {}, [modalPage]);
 
   return (
     <div
@@ -43,7 +50,7 @@ export default function CompLanding({
           />
         </div>
       </div>
-      <div className="z-10 w-full h-full min-h-0 px-15 py-10 pb-36 grid md:grid-cols-5 gap-2">
+      <div className="z-10 w-full h-full min-h-0 px-15 py-10 grid md:grid-cols-5 gap-2">
         {comp.map(({ name, tag, logo, des }, index) => (
           <div
             onClick={() => {
@@ -70,17 +77,21 @@ export default function CompLanding({
                   setSelectComp(index);
                   setModalPage(1);
                 }}
-                className="rounded-full px-4 py-1 bg-[#fae2f5] text-fuchsia-950 font-medium cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/5"
+                className="rounded-full px-4 py-1 bg-[#fae2f5] text-fuchsia-950 font-medium cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/10"
               >
                 รายละเอียด
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSelectComp(index);
-                  setModalPage(2);
+                  if (session) {
+                    setSelectComp(index);
+                    setModalPage(2);
+                  } else {
+                    setModalPage(0);
+                  }
                 }}
-                className="flex-1 rounded-full px-4 py-1 bg-[#C12882] font-medium text-white cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/15"
+                className="flex-1 rounded-full px-4 py-1 bg-[#C12882] font-medium text-white cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/20"
               >
                 ลงทะเบียน
               </button>
@@ -88,9 +99,34 @@ export default function CompLanding({
           </div>
         ))}
       </div>
-
+      <div className="w-full flex items-center justify-center pb-10">
+        <a
+          href="ictp_camp_2025_competition_rulebook.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-1.5 rounded-full text-xl px-8 py-2 font-bold bg-teal-100 text-teal-800 cursor-pointer transition-all duration-200 hover:shadow-md shadow-black/20 hover:scale-105"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="group-hover:scale-110 transition-transform"
+          >
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+          ดาวน์โหลดกฎการแข่งขัน
+        </a>
+      </div>
       {selectComp >= 0 && (
         <CompModal
+          session={session}
           student={student}
           comp_index={selectComp}
           page={modalPage}
@@ -104,6 +140,7 @@ export default function CompLanding({
           toggleNext={() => setSelectComp((selectComp + 1) % comp.length)}
         />
       )}
+      {modalPage == 0 && <LoginFirstModal onClose={() => setModalPage(1)} />}
     </div>
   );
 }

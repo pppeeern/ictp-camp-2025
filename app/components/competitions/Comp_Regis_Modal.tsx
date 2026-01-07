@@ -5,46 +5,6 @@ import { compdata } from "./Comp_Data";
 import CompModalCard from "./Comp_Modal_Card";
 import { ColorMap, StudentType } from "../account/AccountData";
 
-function TeamMember({
-  index,
-  name,
-  room,
-  status1,
-  status2,
-}: {
-  index: number;
-  name: string;
-  room: string;
-  status1?: number;
-  status2?: number;
-}) {
-  return (
-    <>
-      <div className="text-center">{index}</div>
-      <div className="pl-2">{name}</div>
-      <div className="text-center">{room}</div>
-      {status1 && (
-        <div className="text-center">{status1 == 2 ? "✅" : "❎"}</div>
-      )}
-      {status2 && (
-        <div className="text-center">{status2 == 2 ? "✅" : "❎"}</div>
-      )}
-    </>
-  );
-}
-
-function SkeletonMember({ index }: { index: number }) {
-  return (
-    <>
-      <div className="text-center">{index}</div>
-      <div className="pl-2 text-sm w-3/4 h-5 bg-gray-100 text-gray-600 rounded-full flex items-center">
-        ว่าง
-      </div>
-      <div className="text-sm w-full h-5 bg-gray-100 rounded-full flex items-center justify-center"></div>
-    </>
-  );
-}
-
 type StudentMemberType = {
   student_id: number;
   name: string;
@@ -73,6 +33,13 @@ export default function CompRegisModal({
   const { name, logo, req, min, max, team_type } = compdata[comp_index];
 
   const [fetchTeam, setFetchTeam] = useState<TeamType[] | null>(null);
+  const [refreshTeams, setRefreshTeams] = useState(false);
+
+  const [activeTeamNo, setActiveTeamNo] = useState<number>(1);
+
+  useEffect(() => {
+    setActiveTeamNo(1);
+  }, [comp_index]);
 
   useEffect(() => {
     if (!student) return;
@@ -88,61 +55,83 @@ export default function CompRegisModal({
     }
 
     loadTeams();
-  }, [comp_index, student]);
+  }, [comp_index, student, activeTeamNo, refreshTeams]);
 
   const teams =
-    team_type === "duo"
-      ? fetchTeam?.map((teamData) => {
-          const members = teamData.members.map((member) => ({
-            name: member.students.name,
-            room: `${member.students.room}/6`,
-          }));
+    fetchTeam?.map((teamData) => {
+      const members = teamData.members.map((member) => ({
+        student_id: member.students.student_id,
+        name: member.students.name,
+        room: `${member.students.room}/6`,
+      }));
 
-          const mem_rows = Array.from(
-            { length: max },
-            (_, i) => members[i] ?? null
-          );
+      const mem_rows = Array.from(
+        { length: team_type !== "solo" ? max : members.length },
+        (_, i) => members[i] ?? null
+      );
 
-          return {
-            id: teamData.id,
-            no: teamData.no,
-            members: mem_rows,
-          };
-        }) ?? []
-      : [
-          {
-            id: fetchTeam?.[0]?.id ?? 1,
-            no: fetchTeam?.[0]?.no ?? 1,
-            members: Array.from({ length: max }, (_, i) =>
-              fetchTeam?.[0]?.members?.[i]
-                ? {
-                    name: fetchTeam[0].members[i].students.name,
-                    room: `${fetchTeam[0].members[i].students.room}/6`,
-                  }
-                : null
-            ),
-          },
-        ];
+      return {
+        id: teamData.id,
+        no: teamData.no,
+        members: mem_rows,
+      };
+    }) ?? [];
 
-  const [activeTeamNo, setActiveTeamNo] = useState<number>(1);
   const activeTeam = teams.find((team) => team.no === activeTeamNo);
-  // const mem_amount = activeTeam.members.filter(Boolean).length ?? 0;
-  const mem_amount = 0;
-  // console.log(
-  //   activeTeamNo,
-  //   " / ",
-  //   teams.map((team) => team.no)
-  // );
-  console.log(teams);
+  const mem_amount =
+    teams && activeTeam ? activeTeam?.members.filter(Boolean).length : 0;
 
   const is_regis =
-    fetchTeam?.some((team) =>
-      team.members.some((m) => m.students.student_id === student?.student_id)
+    teams?.some((team) =>
+      team?.members.some((m) => m?.student_id === student?.student_id)
     ) ?? false;
   const is_empty = mem_amount === 0;
   const is_notenough = mem_amount > 0 && mem_amount < min;
   const is_full = mem_amount >= max;
   const regis_available = !is_regis && mem_amount < max;
+
+  const student_team_no =
+    teams?.find((team) =>
+      team?.members.some((m) => m?.student_id === student?.student_id)
+    )?.no ?? null;
+
+  function TeamMember({
+    index,
+    name,
+    room,
+  }: {
+    index: number;
+    name: string;
+    room: string;
+  }) {
+    return (
+      <>
+        <div className="text-center">{index}</div>
+        <div
+          className={`pl-2 w-3/4 ${
+            name === student?.name
+              ? "bg-linear-to-r font-medium text-teal-900 from-teal-100/50 to-cyan-50 rounded-lg "
+              : ""
+          }`}
+        >
+          {name}
+        </div>
+        <div className="text-center">{room}</div>
+      </>
+    );
+  }
+
+  function SkeletonMember({ index }: { index: number }) {
+    return (
+      <>
+        <div className="text-center">{index}</div>
+        <div className="pl-2 text-sm w-3/4 h-5 bg-gray-100 text-gray-600 rounded-full flex items-center">
+          ว่าง
+        </div>
+        <div className="text-sm w-full h-5 bg-gray-100 rounded-full flex items-center justify-center"></div>
+      </>
+    );
+  }
 
   function MemberTable() {
     return (
@@ -157,7 +146,7 @@ export default function CompRegisModal({
           ห้อง
         </div>
 
-        {activeTeam
+        {teams.length && activeTeam
           ? activeTeam.members.map((member, index) =>
               member ? (
                 <TeamMember
@@ -170,11 +159,42 @@ export default function CompRegisModal({
                 <SkeletonMember key={index} index={index + 1}></SkeletonMember>
               )
             )
-          : Array.from({ length: max }, (_, i) => i).map((index) => (
+          : Array.from(
+              { length: team_type !== "solo" ? max : 0 },
+              (_, i) => i
+            ).map((index) => (
               <SkeletonMember key={index} index={index + 1}></SkeletonMember>
             ))}
       </div>
     );
+  }
+
+  async function register() {
+    if (!student) return;
+
+    const res = await fetch("/api/competitions/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        comp_id: comp_index + 1,
+        team_no: activeTeamNo,
+        color: student.color,
+        student_id: student.student_id,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      console.log(
+        data.action === "created"
+          ? `New team created! Team #${data.team_no}`
+          : `Added to existing team #${data.team_no}`
+      );
+      setRefreshTeams((prev) => !prev);
+    } else {
+      console.error("Failed to register:", data.error);
+    }
   }
 
   return (
@@ -210,12 +230,23 @@ export default function CompRegisModal({
             </>
           ) : (
             <>
-              <div className="aspect-square w-12 h-12 rounded-xl bg-red-600 rotate-45"></div>
+              <div
+                style={{ backgroundColor: colorInfo?.hex ?? "#000" }}
+                className="aspect-square w-12 h-12 rounded-xl rotate-45"
+              ></div>
               <div className="flex flex-col">
                 <h1 className="text-3xl font-bold">
                   {student?.name ?? "ชื่อ นามสกุล"}
                 </h1>
-                <h3 className="text-md">#ลำดับ</h3>
+                <h3 className="text-md">
+                  {is_regis && activeTeam
+                    ? `# ${
+                        activeTeam?.members.findIndex(
+                          (member) => member?.name === student?.name
+                        ) + 1
+                      }`
+                    : ""}
+                </h3>
               </div>
             </>
           )}
@@ -225,32 +256,36 @@ export default function CompRegisModal({
           id="team_display"
           className="px-8 py-6 w-full flex-1 overflow-y-auto"
         >
-          {!fetchTeam || !teams.length ? (
+          {team_type === "duo" && (
+            <div className="flex mb-4 rounded-lg overflow-clip">
+              {[1, 2].map((i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveTeamNo(i)}
+                  style={
+                    activeTeamNo === i
+                      ? { backgroundColor: colorInfo?.shade ?? "#000" }
+                      : {}
+                  }
+                  className={`min-w-1/3 py-2 font-semibold transition-all duration-100
+                                ${
+                                  activeTeamNo === i
+                                    ? " text-white w-2/3"
+                                    : "bg-gray-100 text-gray-600 w-1/3 cursor-pointer hover:bg-gray-200 transition-colors"
+                                }
+                      `}
+                >
+                  ทีมที่ {i}
+                </button>
+              ))}
+            </div>
+          )}
+          {!fetchTeam ? (
             <div className="w-full h-full flex items-center justify-center">
               <div className="w-10 h-10 rounded-full border-4 border-gray-200 border-t-gray-400 animate-spin"></div>
             </div>
           ) : (
             <>
-              {team_type === "duo" && (
-                <div className="flex mb-4 rounded-lg overflow-clip">
-                  {[1, 2].map((i) => (
-                    <button
-                      key={i}
-                      onClick={() => setActiveTeamNo(i)}
-                      className={`min-w-1/3 py-2 font-semibold transition-all duration-100
-                                ${
-                                  activeTeamNo === i
-                                    ? "bg-red-800 text-white w-2/3"
-                                    : "bg-gray-100 text-gray-600 w-1/3 cursor-pointer"
-                                }
-                      `}
-                    >
-                      ทีมที่ {i}
-                    </button>
-                  ))}
-                </div>
-              )}
-
               <MemberTable />
 
               {(is_empty || is_notenough) && (
@@ -273,7 +308,11 @@ export default function CompRegisModal({
                     />
                   </svg>
                   <span>
-                    {is_empty && "สีของคุณยังไม่มีสมาชิกลงทะเบียนในรายการนี้"}
+                    {is_empty
+                      ? team_type === "solo"
+                        ? "ยังไม่มีสมาชิกลงทะเบียนในรายการนี้"
+                        : "สีของคุณยังไม่มีสมาชิกลงทะเบียนในรายการนี้"
+                      : ""}
                     {is_notenough &&
                       `ยังมีสมาชิกไม่ครบตามจำนวนขั้นต่ำ (${min} คน)`}
                   </span>
@@ -288,9 +327,16 @@ export default function CompRegisModal({
           className="w-full flex items-center justify-center py-4 shrink-0"
         >
           <button
+            style={
+              regis_available
+                ? { backgroundColor: colorInfo?.hex ?? "#000" }
+                : {}
+            }
+            disabled={!regis_available}
+            onClick={() => register()}
             className={`rounded-full text-xl px-8 py-2 font-bold text-white ${
               regis_available
-                ? `bg-red-600 cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/15`
+                ? ` cursor-pointer transition-all duration-200 hover:shadow-md shadow-black/20 hover:scale-105`
                 : is_regis
                 ? `bg-teal-800`
                 : `bg-gray-600`
@@ -299,17 +345,21 @@ export default function CompRegisModal({
             {regis_available ? (
               <>
                 ลงทะเบียน{" "}
-                <span className="font-normal text-lg">
-                  {`<${
-                    // activeTeam.no ? name + " ทีมที่ " + activeTeam.no : name
-                    name
-                  }>`}
-                </span>
+                <span className="font-normal text-lg">{`<${
+                  team_type === "duo" ? name + " ทีมที่ " + activeTeamNo : name
+                }>`}</span>
               </>
             ) : is_regis ? (
-              <>คุณลงทะเบียนแล้ว</>
+              <>
+                คุณลงทะเบียนแล้ว{" "}
+                <span className="font-normal text-lg">{`${
+                  team_type === "duo" ? `<ทีมที่ ${student_team_no}>` : ""
+                }`}</span>
+              </>
+            ) : is_full ? (
+              "ทีมนี้มีสมาชิกครบแล้ว"
             ) : (
-              <>ทีมนี้มีสมาชิกครบแล้ว</>
+              "โอ๊ะโอ เจอบั๊กเข้าแล้ว"
             )}
           </button>
         </div>

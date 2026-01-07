@@ -104,7 +104,7 @@ export default async function Home() {
           ))}
         </div>
       </div>
-      <CompLanding student={student} />
+      <CompLanding session={session} student={student} />
     </div>
   );
 }

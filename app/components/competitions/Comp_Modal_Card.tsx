@@ -31,7 +31,7 @@ export default function CompModalCard({
         </div>
         <button
           onClick={onSwitch}
-          className="w-3/4 rounded-full px-4 lg:px-2 py-1 bg-[#C12882] font-medium text-white cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/15"
+          className="w-3/4 rounded-full px-4 lg:px-2 py-1 bg-[#C12882] font-medium text-white cursor-pointer duration-200 hover:bg-[#b31b74] transition-colors"
         >
           {button_text}
         </button>

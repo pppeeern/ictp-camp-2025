@@ -52,7 +52,7 @@ export default function CompDetailModal({
             href="ictp_camp_2025_competition_rulebook.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center justify-center gap-1.5 rounded-full text-xl px-8 py-2 font-bold bg-teal-100 text-teal-800 cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/15"
+            className="flex items-center justify-center gap-1.5 rounded-full text-xl px-8 py-2 font-bold bg-teal-100 text-teal-800 cursor-pointer transition-all duration-200 hover:shadow-md shadow-black/20 hover:scale-105"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
