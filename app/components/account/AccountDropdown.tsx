@@ -58,10 +58,10 @@ export default function AccountDropdown({
           onClick={() =>
             session ? setDropdownOpen(!dropdownOpen) : setActiveModal("login")
           }
-          className="w-full h-full rounded-full overflow-hidden p-2 bg-linear-to-b from-[#518696] to-[#6a9fa3] border border-white/60 hover:shadow-lg duration-75 cursor-pointer relative z-50"
+          className="group w-full h-full rounded-full overflow-hidden p-2 bg-linear-to-b from-[#e0f7ff] to-[#a4dcdf] border border-white/60 transition-all hover:shadow-lg hover:scale-105 duration-75 cursor-pointer relative z-50"
         >
           <img
-            className="w-full h-full opacity-50"
+            className="w-full h-full opacity-70 group-hover:animate-spin group-hover:opacity-80"
             src={`/icons/${avatar}.png`}
             alt="avatar"
           />

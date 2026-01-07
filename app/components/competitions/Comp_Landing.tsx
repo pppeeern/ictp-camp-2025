@@ -15,10 +15,11 @@ export default function CompLanding({
   student: StudentType | null;
 }) {
   const [selectComp, setSelectComp] = useState<number>(-1);
-  const [modalPage, setModalPage] = useState<number>(1);
+  const [modalPage, setModalPage] = useState<
+    "none" | "detail" | "regis" | "login"
+  >("none");
 
   console.log(modalPage);
-  useEffect(() => {}, [modalPage]);
 
   return (
     <div
@@ -26,7 +27,7 @@ export default function CompLanding({
       className="relative min-h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center pt-25"
     >
       <img
-        className="absolute z-10 w-full top-0 translate-y-[calc(-50%)]"
+        className="absolute z-10 w-screen scale-120 top-0 translate-y-[calc(-50%-10px)]"
         src="/landing/cloud-cover.png"
         alt="cloud cover"
       />
@@ -55,7 +56,7 @@ export default function CompLanding({
           <div
             onClick={() => {
               setSelectComp(index);
-              setModalPage(1);
+              setModalPage("detail");
             }}
             key={index}
             className="min-h-0 h-120 flex flex-col items-center justify-between py-8 px-6 bg-amber-100 rounded-xl transition-all duration-200 cursor-pointer hover:-translate-y-1.5 hover:drop-shadow-xl drop-shadow-black/50"
@@ -75,7 +76,7 @@ export default function CompLanding({
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectComp(index);
-                  setModalPage(1);
+                  setModalPage("detail");
                 }}
                 className="rounded-full px-4 py-1 bg-[#fae2f5] text-fuchsia-950 font-medium cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/10"
               >
@@ -86,9 +87,9 @@ export default function CompLanding({
                   e.stopPropagation();
                   if (session) {
                     setSelectComp(index);
-                    setModalPage(2);
+                    setModalPage("regis");
                   } else {
-                    setModalPage(0);
+                    setModalPage("login");
                   }
                 }}
                 className="flex-1 rounded-full px-4 py-1 bg-[#C12882] font-medium text-white cursor-pointer transition-shadow duration-200 hover:shadow-md shadow-black/20"
@@ -126,12 +127,15 @@ export default function CompLanding({
       </div>
       {selectComp >= 0 && (
         <CompModal
-          session={session}
           student={student}
           comp_index={selectComp}
           page={modalPage}
           onClose={() => setSelectComp(-1)}
-          onSwitch={() => setModalPage((modalPage + 1) % 2)}
+          onSwitch={() => {
+            session
+              ? setModalPage((prev) => (prev === "detail" ? "regis" : "detail"))
+              : setModalPage("login");
+          }}
           togglePrev={() =>
             setSelectComp(
               selectComp != 0 ? (selectComp - 1) % comp.length : comp.length - 1
@@ -140,7 +144,9 @@ export default function CompLanding({
           toggleNext={() => setSelectComp((selectComp + 1) % comp.length)}
         />
       )}
-      {modalPage == 0 && <LoginFirstModal onClose={() => setModalPage(1)} />}
+      {modalPage == "login" && (
+        <LoginFirstModal onClose={() => setModalPage("detail")} />
+      )}
     </div>
   );
 }

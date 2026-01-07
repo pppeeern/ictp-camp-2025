@@ -29,13 +29,13 @@ export default async function Home() {
   }
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden scroll-smooth">
       <Navigation session={session} displayName={student?.name} />
       <div
         id="landing"
         className="relative flex flex-col items-center justify-center h-screen"
       >
-        <div className="z-20 mt-45 size-100 md:size-140 xl:mt-50 xl:size-160 2xl:mt-60 2xl:size-180">
+        <div className="z-20 mt-40 size-100 md:size-140 xl:size-160 2xl:size-170">
           <img
             draggable="false"
             src="/landing/camp-logo_1.webp"

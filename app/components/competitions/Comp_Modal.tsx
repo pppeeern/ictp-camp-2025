@@ -7,7 +7,6 @@ import { StudentType } from "../account/AccountData";
 import { Session } from "next-auth";
 
 export default function CompModal({
-  session,
   student,
   comp_index,
   page,
@@ -16,10 +15,9 @@ export default function CompModal({
   togglePrev,
   toggleNext,
 }: {
-  session?: Session | null;
   student: StudentType | null;
   comp_index: number;
-  page: number;
+  page: string;
   onClose: () => void;
   onSwitch: () => void;
   togglePrev: () => void;
@@ -45,40 +43,22 @@ export default function CompModal({
   }
 
   return (
-    <>
-      {session ? (
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          style="relative grid grid-cols-[35%_1fr] justify-center w-3/4 h-3/4 max-h-3/4"
-        >
-          {page == 1 ? (
-            <CompDetailModal comp_index={comp_index} onSwitch={onSwitch} />
-          ) : (
-            <CompRegisModal
-              student={student}
-              comp_index={comp_index}
-              onSwitch={onSwitch}
-            />
-          )}
-          <Arrow position="L" />
-          <Arrow position="R" />
-        </Modal>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      style="relative grid grid-cols-[35%_1fr] justify-center w-3/4 h-3/4 max-h-3/4"
+    >
+      {page == "regis" ? (
+        <CompRegisModal
+          student={student}
+          comp_index={comp_index}
+          onSwitch={onSwitch}
+        />
       ) : (
-        <>
-          {page == 1 && (
-            <Modal
-              isOpen={isOpen}
-              onClose={onClose}
-              style="relative grid grid-cols-[35%_1fr] justify-center w-3/4 h-3/4 max-h-3/4"
-            >
-              <CompDetailModal comp_index={comp_index} onSwitch={onSwitch} />
-              <Arrow position="L" />
-              <Arrow position="R" />
-            </Modal>
-          )}
-        </>
+        <CompDetailModal comp_index={comp_index} onSwitch={onSwitch} />
       )}
-    </>
+      <Arrow position="L" />
+      <Arrow position="R" />
+    </Modal>
   );
 }
