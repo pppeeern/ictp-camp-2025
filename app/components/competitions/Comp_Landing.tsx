@@ -3,8 +3,13 @@ import { useState } from "react";
 
 import { compdata as comp } from "./Comp_Data";
 import CompModal from "./Comp_Modal";
+import { StudentType } from "../account/AccountData";
 
-export default function CompLanding() {
+export default function CompLanding({
+  student,
+}: {
+  student: StudentType | null;
+}) {
   const [selectComp, setSelectComp] = useState<number>(-1);
   const [modalPage, setModalPage] = useState<number>(1);
 
@@ -86,6 +91,7 @@ export default function CompLanding() {
 
       {selectComp >= 0 && (
         <CompModal
+          student={student}
           comp_index={selectComp}
           page={modalPage}
           onClose={() => setSelectComp(-1)}

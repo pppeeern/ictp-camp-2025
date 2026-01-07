@@ -8,10 +8,11 @@ export type compType = {
   req: ReactElement;
   min: number;
   max: number;
+  team_type: "solo" | "single" | "duo";
   date: string;
 };
 
-export const compdata = [
+export const compdata: compType[] = [
   {
     name: "Zero Day Quest",
     tag: "ความปลอดภัยไซเบอร์",
@@ -25,6 +26,7 @@ export const compdata = [
     ),
     min: 3,
     max: 5,
+    team_type: "single",
     date: "13 มกราคม 2568",
   },
   {
@@ -40,6 +42,7 @@ export const compdata = [
     ),
     min: 3,
     max: 3,
+    team_type: "single",
     date: "13-14 มกราคม 2568",
   },
   {
@@ -55,6 +58,7 @@ export const compdata = [
     ),
     min: 5,
     max: 5,
+    team_type: "duo",
     date: "14 มกราคม 2568",
   },
   {
@@ -70,6 +74,7 @@ export const compdata = [
     ),
     min: 4,
     max: 4,
+    team_type: "duo",
     date: "14 มกราคม 2568",
   },
   {
@@ -85,6 +90,7 @@ export const compdata = [
     ),
     min: 0,
     max: 100,
+    team_type: "solo",
     date: "13-14 มกราคม 2568",
   },
 ];

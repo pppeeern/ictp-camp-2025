@@ -12,7 +12,13 @@ const nav = [
   { name: "อันดับ", href: "/" },
 ];
 
-export default function Navigation({ session }: { session: Session | null }) {
+export default function Navigation({
+  session,
+  displayName,
+}: {
+  session: Session | null;
+  displayName?: string;
+}) {
   return (
     <div className="fixed z-50 w-full flex justify-between items-center gap-4 px-5 md:px-10 lg:px-15 pt-12">
       <Link target="_blank" href="https://www.bj.ac.th/main">
@@ -33,7 +39,7 @@ export default function Navigation({ session }: { session: Session | null }) {
           </Link>
         ))}
       </div>
-      <AccountDropdown session={session} />
+      <AccountDropdown session={session} displayName={displayName} />
     </div>
   );
 }

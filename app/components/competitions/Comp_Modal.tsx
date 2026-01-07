@@ -1,11 +1,12 @@
-"use client";
 import { useEffect, useState } from "react";
 
 import Modal from "../Modal";
 import CompRegisModal from "./Comp_Regis_Modal";
 import CompDetailModal from "./Comp_Detail_Modal";
+import { StudentType } from "../account/AccountData";
 
 export default function CompModal({
+  student,
   comp_index,
   page,
   onClose,
@@ -13,6 +14,7 @@ export default function CompModal({
   togglePrev,
   toggleNext,
 }: {
+  student: StudentType | null;
   comp_index: number;
   page: number;
   onClose: () => void;
@@ -48,7 +50,11 @@ export default function CompModal({
       {page == 1 ? (
         <CompDetailModal comp_index={comp_index} onSwitch={onSwitch} />
       ) : (
-        <CompRegisModal comp_index={comp_index} onSwitch={onSwitch} />
+        <CompRegisModal
+          student={student}
+          comp_index={comp_index}
+          onSwitch={onSwitch}
+        />
       )}
       <Arrow position="L" />
       <Arrow position="R" />

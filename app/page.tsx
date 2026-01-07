@@ -1,6 +1,9 @@
-import Navigation from "./components/Navigation";
 import { auth } from "@/auth";
+import { supabase } from "./lib/supabase";
+
+import Navigation from "./components/Navigation";
 import CompLanding from "./components/competitions/Comp_Landing";
+import { StudentType } from "./components/account/AccountData";
 
 const sched = [
   { date: 5, month: "DEC", title: "ลงทะเบียนการแข่งขัน" },
@@ -13,9 +16,21 @@ const sports = [{ name: "ฟุตบอลประเพณี" }, { name: "�
 
 export default async function Home() {
   const session = await auth();
+
+  let student: StudentType | null = null;
+  if (session?.user?.studentId) {
+    const { data } = await supabase
+      .from("students")
+      .select(`student_id, name, nickname, color, room`)
+      .eq("student_id", session.user.studentId)
+      .single();
+
+    student = data ?? null;
+  }
+
   return (
     <div className="overflow-hidden">
-      <Navigation session={session} />
+      <Navigation session={session} displayName={student?.name} />
       <div
         id="landing"
         className="relative flex flex-col items-center justify-center h-screen"
@@ -89,7 +104,7 @@ export default async function Home() {
           ))}
         </div>
       </div>
-      <CompLanding />
+      <CompLanding student={student} />
     </div>
   );
 }

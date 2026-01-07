@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { Session } from "next-auth";
-import { supabase } from "@/app/lib/supabase";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
 import ChangePinModal from "./ChangePinModal";
@@ -11,8 +10,10 @@ import LogoutModal from "./LogoutModal";
 
 export default function AccountDropdown({
   session,
+  displayName,
 }: {
   session?: Session | null;
+  displayName?: string | null;
 }) {
   const avatar_slot = ["ship", "star", "skull"];
   const [avatar, setAvatar] = useState<string>("");
@@ -45,7 +46,7 @@ export default function AccountDropdown({
   }, []);
 
   const dropdown_menu_style =
-    "block cursor-pointer w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-[#1E6C74]/10 hover:text-[#1E6C74] font-medium transition-colors";
+    "block cursor-pointer w-full text-left block px-4 py-1.5 text-sm text-gray-700 hover:bg-[#1E6C74]/10 hover:text-[#1E6C74] font-medium transition-colors";
 
   return (
     <div
@@ -83,7 +84,9 @@ export default function AccountDropdown({
           }`}
         >
           <div className="py-2">
-            <div className=""></div>
+            <div className="px-4 pt-2 pb-1 font-bold text-teal-900">
+              ⚓ {displayName}
+            </div>
             <div className="border-t border-gray-100 my-1"></div>
             <Link href="/profile" className={dropdown_menu_style}>
               โปรไฟล์
