@@ -19,15 +19,13 @@ export default function CompLanding({
     "none" | "detail" | "regis" | "login"
   >("none");
 
-  console.log(modalPage);
-
   return (
     <div
       id="competitions"
       className="relative min-h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center pt-25"
     >
       <img
-        className="absolute z-10 w-screen scale-120 top-0 translate-y-[calc(-50%-10px)]"
+        className="absolute w-screen scale-120 top-0 translate-y-[calc(-50%-10px)]"
         src="/landing/cloud-cover.png"
         alt="cloud cover"
       />
@@ -41,7 +39,7 @@ export default function CompLanding({
         src="/landing/cloud-r_1.png"
         alt="cloud-right"
       />
-      <div className="w-full pt-14 flex flex-col items-center justify-end">
+      <div className="w-full pt-5 flex flex-col items-center justify-end">
         <div className="relative flex items-center justify-center w-full mt-5 mb-10 drop-shadow-2xl">
           <h2 className="text-6xl font-bold -translate-y-2 z-10">การแข่งขัน</h2>
           <img
@@ -105,7 +103,7 @@ export default function CompLanding({
           href="ictp_camp_2025_competition_rulebook.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-1.5 rounded-full text-xl px-8 py-2 font-bold bg-teal-100 text-teal-800 cursor-pointer transition-all duration-200 hover:shadow-md shadow-black/20 hover:scale-105"
+          className="flex items-center justify-center gap-1.5 rounded-full text-xl px-8 py-2 font-bold bg-linear-to-b from-teal-100 to-cyan-100 text-teal-800 cursor-pointer transition-all duration-200 hover:shadow-md shadow-black/20 hover:scale-105 hover:bg-linear-to-t"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

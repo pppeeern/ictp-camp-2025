@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 
 import { compdata } from "./Comp_Data";
 import CompModalCard from "./Comp_Modal_Card";
-import { ColorMap, StudentType } from "../account/AccountData";
+import { StudentType } from "../account/AccountData";
+import { ColorMap } from "../../components/ColorData";
 
 type StudentMemberType = {
   student_id: number;

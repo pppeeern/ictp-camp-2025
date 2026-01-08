@@ -7,7 +7,7 @@ import AccountDropdown from "./account/AccountDropdown";
 
 const nav = [
   { name: "กำหนดการ", href: "/" },
-  { name: "กีฬา", href: "/" },
+  { name: "กีฬา", href: "#sports" },
   { name: "การแข่งขัน", href: "#competitions" },
   { name: "อันดับ", href: "/" },
 ];
@@ -34,7 +34,7 @@ export default function Navigation({
           <a
             key={index}
             href={href}
-            className="text-white text-lg text-shadow-md cursor-pointer transition-colors duration-150 hover:text-gray-300"
+            className="text-white text-lg text-shadow-md cursor-pointer transition-all duration-150 hover:text-gray-100 hover:scale-x-105"
           >
             {name}
           </a>

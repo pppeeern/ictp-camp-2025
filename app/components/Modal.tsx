@@ -54,11 +54,11 @@ export default function Modal({
       >
         <button
           onClick={onClose}
-          className="absolute p-1 cursor-pointer top-6 right-6 rounded-full text-gray-500 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-200"
+          className="group absolute p-1 top-6 right-6 hover:drop-shadow-md"
         >
           <img
             draggable="false"
-            className="w-14 cursor-pointer hover:brightness-95 transition-all duration-100"
+            className="w-14 cursor-pointer group-hover:brightness-95 transition-all duration-100"
             src="/button/close-button.png"
             alt="close"
           />

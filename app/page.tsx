@@ -4,6 +4,7 @@ import { supabase } from "./lib/supabase";
 import Navigation from "./components/Navigation";
 import CompLanding from "./components/competitions/Comp_Landing";
 import { StudentType } from "./components/account/AccountData";
+import SportLanding from "./components/sports/Sport_Landing";
 
 const sched = [
   { date: 5, month: "DEC", title: "ลงทะเบียนการแข่งขัน" },
@@ -11,8 +12,6 @@ const sched = [
   { date: 5, month: "JAN", title: "RoboMission Practice" },
   // {date: 5, month: "DEC", title: "ลงทะเบียนการแข่งขัน"},
 ];
-
-const sports = [{ name: "ฟุตบอลประเพณี" }, { name: "แชร์บอลทางน้ำ" }];
 
 export default async function Home() {
   const session = await auth();
@@ -79,31 +78,7 @@ export default async function Home() {
           ))}
         </div>
       </div>
-      <div
-        id="sports"
-        className="hidden min-h-screen bg-linear-to-b from-[#1E6C74] to-[#59A0A8] flex flex-col items-center gap-15 pt-12"
-      >
-        <div className="w-full pt-14 flex flex-col items-center justify-end">
-          <div className="bg-amber-50 rounded-lg px-12 pt-4 pb-2">
-            <h2 className="text-6xl font-bold">กีฬา</h2>
-          </div>
-        </div>
-        <div className="w-5/6 md:w-3/4 lg:w-2/3 grid md:grid-cols-2 gap-15 lg:gap-25">
-          {sports.map(({ name }, index) => (
-            <div
-              key={index}
-              className="relative flex flex-col items-center py-15 px-10 bg-amber-100 aspect-square"
-            >
-              <div className="w-full text-center text-4xl font-medium">
-                {name}
-              </div>
-              <button className="absolute bottom-0 translate-y-4 flex justify-center items-center rounded-2xl bg-[#C12882] text-white text-center text-2xl px-6 py-1.5 shadow-lg cursor-pointer transition-transform duration-200 hover:translate-y-3.5">
-                ทายผล
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
+      <SportLanding />
       <CompLanding session={session} student={student} />
     </div>
   );
