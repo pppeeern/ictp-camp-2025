@@ -1,8 +1,11 @@
+import Link from "next/link";
+
 export default function CompModalCard({
   name,
   logo,
   des_title,
   button_text,
+  upl,
   children,
   onSwitch,
 }: {
@@ -10,6 +13,7 @@ export default function CompModalCard({
   logo: string;
   des_title: string;
   button_text: string;
+  upl?: string;
   children: React.ReactNode;
   onSwitch: () => void;
 }) {
@@ -29,12 +33,23 @@ export default function CompModalCard({
         <div className="w-9/10 p-4 rounded-lg bg-gray-700 text-white text-sm xl:text-base">
           <p className="font-semibold">{des_title}</p> {children}
         </div>
-        <button
-          onClick={onSwitch}
-          className="w-3/4 rounded-full px-4 lg:px-2 py-1 bg-[#C12882] font-medium text-white cursor-pointer duration-200 hover:bg-[#b31b74] transition-colors"
-        >
-          {button_text}
-        </button>
+        <div className="w-full flex justify-center gap-2 px-6">
+          {upl && (
+            <Link
+              href={upl}
+              target="_blank"
+              className="w-full text-center rounded-full px-4 lg:px-2 py-1 bg-amber-400 font-medium text-amber-950 cursor-pointer duration-200 hover:bg-yellow-500 hover:scale-105 transition-all"
+            >
+              ส่งผลงาน
+            </Link>
+          )}
+          <button
+            onClick={onSwitch}
+            className="max-w-3/4 w-full text-center rounded-full px-4 lg:px-2 py-1 bg-[#C12882] font-medium text-white cursor-pointer duration-200 hover:bg-[#b31b74] transition-colors"
+          >
+            {button_text}
+          </button>
+        </div>
       </div>
     </div>
   );

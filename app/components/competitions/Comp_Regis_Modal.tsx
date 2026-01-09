@@ -31,7 +31,7 @@ export default function CompRegisModal({
 }) {
   const colorInfo = student?.color ? ColorMap[student.color] : null;
 
-  const { name, logo, req, min, max, team_type } = compdata[comp_index];
+  const { name, logo, req, min, max, team_type, upl } = compdata[comp_index];
 
   const [fetchTeam, setFetchTeam] = useState<TeamType[] | null>(null);
   const [refreshTeams, setRefreshTeams] = useState(false);
@@ -206,6 +206,7 @@ export default function CompRegisModal({
         des_title="เงื่อนไข"
         button_text="รายละเอียด"
         onSwitch={onSwitch}
+        upl={upl}
       >
         {req}
       </CompModalCard>

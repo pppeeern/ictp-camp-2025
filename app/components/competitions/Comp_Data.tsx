@@ -10,6 +10,8 @@ export type compType = {
   max: number;
   team_type: "solo" | "single" | "duo";
   date: string;
+  upl?: string;
+  rulebook?: string;
 };
 
 export const compdata: compType[] = [
@@ -44,6 +46,8 @@ export const compdata: compType[] = [
     max: 3,
     team_type: "single",
     date: "13-14 มกราคม 2568",
+    upl: "",
+    rulebook: "/competitions/rulebook/PirateFrame_Rulebook.pdf",
   },
   {
     name: "RoboMission",
@@ -60,6 +64,7 @@ export const compdata: compType[] = [
     max: 5,
     team_type: "duo",
     date: "14 มกราคม 2568",
+    rulebook: "/competitions/rulebook/RoboMission_Rulebook.pdf",
   },
   {
     name: "GenEn",
@@ -76,12 +81,13 @@ export const compdata: compType[] = [
     max: 4,
     team_type: "duo",
     date: "14 มกราคม 2568",
+    rulebook: "/competitions/rulebook/GenEn_Rulebook.pdf",
   },
   {
     name: "เย็นตาโฟโต้",
     tag: "ถ่ายภาพ",
     logo: "/competitions/YenTaPhoto.png",
-    des: `การประกวดภาพถ่าย ในหัวข้อ “บันทึกระว่างทาง” และ “ภาพนี้คืออะไร??”`,
+    des: `การประกวดภาพถ่าย ในหัวข้อ “บันทึกระหว่างทาง” และ “ภาพนี้คืออะไร??”`,
     req: (
       <p>
         1. นักเรียนชั้นมัธยมศึกษาปีที่ 4-6 <br />

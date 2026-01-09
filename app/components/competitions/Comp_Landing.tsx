@@ -98,7 +98,7 @@ export default function CompLanding({
           </div>
         ))}
       </div>
-      <div className="w-full flex items-center justify-center pb-10">
+      <div className="hidden w-full flex items-center justify-center pb-10">
         <a
           href="ictp_camp_2025_competition_rulebook.pdf"
           target="_blank"

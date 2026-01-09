@@ -4,7 +4,6 @@ import Modal from "../Modal";
 import CompRegisModal from "./Comp_Regis_Modal";
 import CompDetailModal from "./Comp_Detail_Modal";
 import { StudentType } from "../account/AccountData";
-import { Session } from "next-auth";
 
 export default function CompModal({
   student,
