@@ -3,8 +3,17 @@
 import { useEffect, useState } from "react";
 import { sportdata } from "./Sport_Data";
 import SportBetModal from "./Sport_Bet_modal";
+import { StudentType } from "../account/AccountData";
+import { Session } from "next-auth";
+import LoginFirstModal from "../account/LoginFirstModal";
 
-export default function SportLanding() {
+export default function SportLanding({
+  session,
+  student,
+}: {
+  session?: Session | null;
+  student: StudentType | null;
+}) {
   const [betModal, setBetModal] = useState<number>(-1);
   const [isOpen, setOpen] = useState(false);
   useEffect(() => {
@@ -41,7 +50,7 @@ export default function SportLanding() {
           />
         </div>
       </div>
-      <div className="w-5/6 md:w-3/4 lg:w-2/3 grid md:grid-cols-2 gap-15 lg:gap-25">
+      <div className="w-5/6 md:w-9/10 grid md:grid-cols-3 gap-5">
         {sportdata.map(({ name, abbr, date, mem, dur }, index) => (
           <div
             key={index}
@@ -49,7 +58,11 @@ export default function SportLanding() {
           >
             <div className="w-full text-center text-4xl font-bold">{name}</div>
             <div className="w-full aspect-3/2 bg-amber-200 rounded-xl border-6 border-[#C12882] overflow-clip">
-              <img src={`/sports/${abbr}-${randomPath}.webp`} alt={abbr} />
+              <img
+                className="h-full w-full aspect-3/2 object-fill"
+                src={`/sports/${abbr}-${randomPath}.webp`}
+                alt={abbr}
+              />
             </div>
             <div className="w-full flex items-center justify-center gap-2">
               {[date, mem, dur].map((e, index) => (
@@ -66,7 +79,7 @@ export default function SportLanding() {
               ))}
             </div>
             <button
-              onClick={() => setBetModal(index)}
+              onClick={() => setBetModal(session ? index : -10)}
               className="z-20 absolute bottom-0 translate-y-4 flex justify-center items-center gap-1.5 rounded-2xl bg-[#C12882] text-white text-center text-xl font-bold px-6 py-1.5 drop-shadow-lg cursor-pointer transition-transform duration-100 hover:scale-105 hover:translate-y-2 group"
             >
               <svg
@@ -95,11 +108,13 @@ export default function SportLanding() {
 
       {betModal >= 0 && (
         <SportBetModal
+          student={student}
           sport_index={betModal}
           isOpen={isOpen}
           onClose={() => setBetModal(-1)}
         />
       )}
+      {betModal == -10 && <LoginFirstModal onClose={() => setBetModal(-1)} />}
     </div>
   );
 }

@@ -78,7 +78,7 @@ export default async function Home() {
           ))}
         </div>
       </div>
-      <SportLanding />
+      <SportLanding session={session} student={student} />
       <CompLanding session={session} student={student} />
     </div>
   );
