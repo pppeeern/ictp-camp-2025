@@ -11,6 +11,7 @@ export type compType = {
   team_type: "solo" | "single" | "duo";
   date: string;
   upl?: string;
+  web?: string;
   rulebook?: string;
 };
 
@@ -30,6 +31,7 @@ export const compdata: compType[] = [
     max: 5,
     team_type: "single",
     date: "13 มกราคม 2568",
+    web: "https://zdqctf.lol/",
   },
   {
     name: "Pirate Frame",
@@ -46,8 +48,8 @@ export const compdata: compType[] = [
     max: 3,
     team_type: "single",
     date: "13-14 มกราคม 2568",
-    upl: "",
     rulebook: "/competitions/rulebook/PirateFrame_Rulebook.pdf",
+    upl: "https://drive.google.com/drive/folders/19vUGOO9oRHoc_0U254WWCBWIYlWH-blx?usp=sharing",
   },
   {
     name: "RoboMission",
@@ -98,5 +100,6 @@ export const compdata: compType[] = [
     max: 100,
     team_type: "solo",
     date: "13-14 มกราคม 2568",
+    upl: "https://drive.google.com/drive/folders/1qG56fmBw9oXX5V3lP-0fG0YYKIKGdmKz?usp=sharing",
   },
 ];

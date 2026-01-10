@@ -6,6 +6,7 @@ export default function CompModalCard({
   des_title,
   button_text,
   upl,
+  web,
   children,
   onSwitch,
 }: {
@@ -14,6 +15,7 @@ export default function CompModalCard({
   des_title: string;
   button_text: string;
   upl?: string;
+  web?: string;
   children: React.ReactNode;
   onSwitch: () => void;
 }) {
@@ -41,6 +43,15 @@ export default function CompModalCard({
               className="w-full text-center rounded-full px-4 lg:px-2 py-1 bg-amber-400 font-medium text-amber-950 cursor-pointer duration-200 hover:bg-yellow-500 hover:scale-105 transition-all"
             >
               ส่งผลงาน
+            </Link>
+          )}
+          {web && (
+            <Link
+              href={web}
+              target="_blank"
+              className="w-full text-center rounded-full px-4 lg:px-2 py-1 bg-amber-400 font-medium text-amber-950 cursor-pointer duration-200 hover:bg-yellow-500 hover:scale-105 transition-all"
+            >
+              เว็บไซต์
             </Link>
           )}
           <button

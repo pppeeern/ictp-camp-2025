@@ -11,7 +11,8 @@ export default function CompDetailModal({
   comp_index: number;
   onSwitch: () => void;
 }) {
-  const { name, tag, logo, des, date, upl, rulebook } = compdata[comp_index];
+  const { name, tag, logo, des, date, web, upl, rulebook } =
+    compdata[comp_index];
   const rule_message = [
     "ว้าย ยังไม่เสร็จ",
     "แย่จัง แย่จัง แย่จัง",
@@ -29,6 +30,7 @@ export default function CompDetailModal({
         des_title=""
         button_text="ลงทะเบียน"
         upl={upl}
+        web={web}
         onSwitch={onSwitch}
       >
         <p>{des}</p>
