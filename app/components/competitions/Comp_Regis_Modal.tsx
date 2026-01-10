@@ -17,6 +17,7 @@ type TeamMemberType = {
 type TeamType = {
   id: number;
   no: number;
+  color: string;
   members: TeamMemberType[];
 };
 
@@ -59,8 +60,27 @@ export default function CompRegisModal({
     loadTeams();
   }, [comp_index, student, activeTeamNo, refreshTeams]);
 
-  const teams =
-    fetchTeam?.map((teamData) => {
+  const teams = (() => {
+    if (!fetchTeam) return [];
+
+    if (team_type === "solo") {
+      const allMembers = fetchTeam.flatMap((teamData) => 
+        teamData.members.map((member) => ({
+          student_id: member.students.student_id,
+          name: member.students.name,
+          room: `${member.students.room}/6`,
+          color: teamData.color
+        }))
+      );
+
+      return [{
+        id: 0,
+        no: 1,
+        members: allMembers
+      }];
+    }
+
+    return fetchTeam.map((teamData) => {
       const members = teamData.members.map((member) => ({
         student_id: member.students.student_id,
         name: member.students.name,
@@ -68,7 +88,7 @@ export default function CompRegisModal({
       }));
 
       const mem_rows = Array.from(
-        { length: team_type !== "solo" ? max : members.length },
+        { length: max },
         (_, i) => members[i] ?? null
       );
 
@@ -77,7 +97,8 @@ export default function CompRegisModal({
         no: teamData.no,
         members: mem_rows,
       };
-    }) ?? [];
+    });
+  })();
 
   const activeTeam = teams.find((team) => team.no === activeTeamNo);
   const mem_amount =
@@ -239,18 +260,18 @@ export default function CompRegisModal({
                 </h1>
                 <h3 className="text-md">
                   {is_regis && activeTeam
-                    ? `# ${
-                        activeTeam?.members.findIndex(
-                          (member) => member?.name === student?.name
-                        ) + 1
-                      }`
+                    ? (() => {
+                        const index = activeTeam?.members.findIndex(
+                          (member) => String(member?.student_id) === String(student?.student_id)
+                        );
+                        return index !== -1 ? `# ${index + 1}` : "Registered";
+                      })()
                     : ""}
                 </h3>
               </div>
             </>
           )}
         </div>
-        {/* Team Display */}
         <div
           id="team_display"
           className="px-8 py-6 w-full flex-1 overflow-y-auto"

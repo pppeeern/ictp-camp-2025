@@ -44,6 +44,17 @@ export default function Modal({
           : "backdrop-blur-md opacity-0"
       }`}
     >
+      <button
+        onClick={onClose}
+        className="group z-[100] fixed top-6 right-6 p-1 hover:drop-shadow-md"
+      >
+        <img
+          draggable="false"
+          className="w-14 cursor-pointer group-hover:brightness-95 transition-all duration-100"
+          src="/button/close-button.png"
+          alt="close"
+        />
+      </button>
       <div
         onClick={(e) => e.stopPropagation()}
         className={`relative transition-all duration-150 drop-shadow-2xl drop-shadow-black/40 ${style} ${
@@ -52,17 +63,6 @@ export default function Modal({
             : "-translate-y-16 scale-75 opacity-0"
         }`}
       >
-        <button
-          onClick={onClose}
-          className="group absolute p-1 top-6 right-6 hover:drop-shadow-md"
-        >
-          <img
-            draggable="false"
-            className="w-14 cursor-pointer group-hover:brightness-95 transition-all duration-100"
-            src="/button/close-button.png"
-            alt="close"
-          />
-        </button>
         {children}
       </div>
     </div>,
