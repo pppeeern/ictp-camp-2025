@@ -13,9 +13,9 @@ type CollType = {
   des: string;
 };
 type UserCollType = {
-  obtained_at: Date;
+  obtained_at: string;
   collections: CollType;
-};
+}[];
 
 export default async function Collection() {
   const session = await auth();
@@ -24,7 +24,7 @@ export default async function Collection() {
     redirect("/login");
   }
 
-  const { data: coll, error } = await supabase
+  const { data, error } = await supabase
     .from("user_collect")
     .select(
       `
@@ -41,10 +41,12 @@ export default async function Collection() {
     )
     .eq("student_id", session.user.studentId || "");
 
-  if (error || !coll) {
+  if (error || !data) {
     console.error("Error fetching student:", error);
     return <div className="p-4 text-red-500">Error loading collection.</div>;
   }
+
+  const coll = data as unknown as UserCollType;
 
   return (
     <div
@@ -88,17 +90,19 @@ export default async function Collection() {
           </div>
         </div>
         <div className="w-full flex-1 p-6 grid grid-cols-4 gap-6 bg-[#cda987] border-8 border-orange-900/70 rounded-3xl shadow-xl shadow-black/20 overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-none [&::-webkit-scrollbar-thumb]:bg-amber-100/50 [&::-webkit-scrollbar-thumb]:rounded-full">
-          {coll.map((c, index) => (
-            <div
-              key={index}
-              title={c.collections.name}
-              className="p-4 aspect-square bg-amber-50 border-4 border-[#cda987] outline-6 outline-amber-50 rounded-xl cursor-pointer hover:outline-[#59A0A8] transition-colors"
-            >
-              {c.collections.icon && (
-                <img src={c.collections.icon} alt={c.collections.name} />
-              )}
-            </div>
-          ))}
+          {coll.map((c, index) => {
+            return (
+              <div
+                key={index}
+                title={c.collections.name}
+                className="p-4 aspect-square bg-amber-50 border-4 border-[#cda987] outline-6 outline-amber-50 rounded-xl cursor-pointer hover:outline-[#59A0A8] transition-colors"
+              >
+                {c.collections.icon && (
+                  <img src={c.collections.icon} alt={c.collections.name} />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
