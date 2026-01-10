@@ -62,22 +62,6 @@ export default async function Home() {
           alt="rock-right"
         />
       </div>
-      <div className="hidden min-h-screen flex flex-col justify-center items-center pt-10">
-        <h2 className="text-2xl font-bold">กำหนดการ</h2>
-        <div className="w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {sched.map(({ date, month, title }, index) => (
-            <div key={index} className="flex flex-col items-center gap-3">
-              <div className="flex flex-col items-center justify-center w-20 h-20 text-center rounded-full bg-teal-700">
-                <span className="text-2xl font-bold text-white">{date}</span>
-                <span className="text-sm leading-4 font-bold text-white">
-                  {month}
-                </span>
-              </div>
-              <p className="text-lg">{title}</p>
-            </div>
-          ))}
-        </div>
-      </div>
       <SportLanding session={session} student={student} />
       <CompLanding session={session} student={student} />
     </div>

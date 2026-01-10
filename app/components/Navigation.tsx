@@ -31,7 +31,7 @@ export default function Navigation({
       <Link target="_blank" href="https://www.bj.ac.th/main">
         <img
           draggable={false}
-          className="w-12 cursor-pointer"
+          className="w-12 cursor-pointer drop-shadow-2xl"
           src="https://www.bj.ac.th/web/assets/images/BJ_LOGO_RE_2563_ENG.png"
           alt="BJ Logo"
         />

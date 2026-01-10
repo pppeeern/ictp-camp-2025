@@ -9,7 +9,7 @@ export default function ScheduleModal({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal
-      style="bg-gray-900 w-1/2 h-3/4 py-8 px-10 flex flex-col items-center justify-between gap-2 rounded-xl"
+      style="bg-gray-900 w-1/2 h-11/12 py-8 px-10 flex flex-col items-center justify-between gap-2 rounded-xl"
       isOpen={isOpen}
       onClose={onClose}
     >

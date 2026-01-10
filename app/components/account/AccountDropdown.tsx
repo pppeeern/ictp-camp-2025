@@ -77,7 +77,7 @@ export default function AccountDropdown({
         </button>
       ) : (
         <div
-          className={`absolute top-full right-0 mt-2 w-48 bg-white/95 backdrop-blur-md rounded-xl shadow-xl overflow-hidden transition-all duration-200 origin-top-right border border-gray-100 ${
+          className={`absolute top-full right-0 mt-2 min-w-48 bg-white/95 backdrop-blur-md rounded-xl shadow-xl overflow-hidden transition-all duration-200 origin-top-right border border-gray-100 ${
             dropdownOpen
               ? "opacity-100 scale-100 translate-y-0"
               : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
@@ -91,7 +91,7 @@ export default function AccountDropdown({
             <Link href="/profile" className={dropdown_menu_style}>
               โปรไฟล์
             </Link>
-            <Link href="#" className={dropdown_menu_style}>
+            <Link href="/collection" className={dropdown_menu_style}>
               คอลเลกชั่น
             </Link>
             <button
@@ -103,7 +103,11 @@ export default function AccountDropdown({
             >
               เปลี่ยน PIN
             </button>
-            <Link href="#" className={dropdown_menu_style}>
+            <Link
+              target="_blank"
+              href="https://www.instagram.com/bj_ictp?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+              className={dropdown_menu_style}
+            >
               แจ้งปัญหา
             </Link>
             <div className="border-t border-gray-100 my-1"></div>
