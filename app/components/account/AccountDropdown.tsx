@@ -7,6 +7,7 @@ import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
 import ChangePinModal from "./ChangePinModal";
 import LogoutModal from "./LogoutModal";
+import { isAdmin } from "@/app/lib/admin";
 
 export default function AccountDropdown({
   session,
@@ -23,6 +24,8 @@ export default function AccountDropdown({
     "none" | "login" | "register" | "changePin" | "logout"
   >("none");
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const isUserAdmin = isAdmin(session?.user?.studentId);
 
   useEffect(() => {
     const random_avatar =
@@ -84,10 +87,15 @@ export default function AccountDropdown({
           }`}
         >
           <div className="py-2">
-            <div className="px-4 pt-2 pb-1 font-bold text-teal-900">
+            <div className="px-4 pt-2 pb-1 font-bold text-teal-900 whitespace-nowrap overflow-hidden text-ellipsis max-w-[240px]">
               ⚓ {displayName}
             </div>
             <div className="border-t border-gray-100 my-1"></div>
+            {isUserAdmin && (
+              <Link href="/admin" className={dropdown_menu_style}>
+                จัดการ (Admin)
+              </Link>
+            )}
             <Link href="/profile" className={dropdown_menu_style}>
               โปรไฟล์
             </Link>

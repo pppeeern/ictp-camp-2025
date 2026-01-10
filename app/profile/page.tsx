@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { supabase } from "@/app/lib/supabase";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { TEAM_COLORS } from "../lib/constants";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -34,14 +35,7 @@ export default async function ProfilePage() {
     }
   }
 
-  const colorMap: Record<string, string> = {
-    เอราวัณ: "#664ea7",
-    มยุรเวนไตย: "#4384f4",
-    นาคราช: "#34a953",
-    บันฑุราชสีห์: "#fbbc04",
-    กิเลน: "#fe6d00",
-    ครุฑา: "#ea4235",
-  };
+  const colorMap = TEAM_COLORS;
 
   const displayColor = colorMap[thaiColorName] || student.color || "#C12882";
 

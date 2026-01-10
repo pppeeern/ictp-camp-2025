@@ -193,3 +193,92 @@ export async function changePin(
      return { message: 'เกิดข้อผิดพลาดบางอย่าง' };
   }
 }
+
+export type LeaderboardItem = {
+  id: string;
+  team_name: string;
+  score: number;
+  rank: number;
+};
+
+import { isAdmin } from './admin';
+
+export async function getLeaderboard() {
+  const { data, error } = await supabase
+    .from('leaderboard')
+    .select('*')
+    .order('score', { ascending: false }); 
+  
+  if (error) {
+      console.error("Error fetching leaderboard:", error);
+      return [];
+  }
+  return data as LeaderboardItem[];
+}
+
+export async function upsertLeaderboardTeam(teamName: string, score: number) {
+    const session = await import("@/auth").then((mod) => mod.auth());
+    if (!isAdmin(session?.user?.studentId)) {
+        throw new Error("Unauthorized");
+    }
+
+    const { data: existing } = await supabase.from('leaderboard').select('*').eq('team_name', teamName).maybeSingle();
+
+    if (existing) {
+        const { error } = await supabase.from('leaderboard').update({ score, updated_at: new Date() }).eq('team_name', teamName);
+        if (error) throw error;
+    } else {
+        const { error } = await supabase.from('leaderboard').insert({ team_name: teamName, score });
+        if (error) throw error;
+    }
+}
+
+
+export async function deleteLeaderboardTeam(id: string) {
+    const session = await import("@/auth").then((mod) => mod.auth());
+    if (!isAdmin(session?.user?.studentId)) {
+        throw new Error("Unauthorized");
+    }
+
+    const { error } = await supabase.from('leaderboard').delete().eq('id', id);
+    if (error) throw error;
+}
+
+export async function getSportResults() {
+  const { data, error } = await supabase
+    .from('sport_results')
+    .select('*');
+  
+  if (error) {
+      console.error("Error fetching sport results:", error);
+      return [];
+  }
+  return data;
+}
+
+export async function upsertSportResult(sportAbbr: string, rank1: string, rank2: string, rank3: string) {
+    const session = await import("@/auth").then((mod) => mod.auth());
+    if (!isAdmin(session?.user?.studentId)) {
+        throw new Error("Unauthorized");
+    }
+
+    const { data: existing } = await supabase.from('sport_results').select('*').eq('sport', sportAbbr).maybeSingle();
+
+    if (existing) {
+        const { error } = await supabase.from('sport_results').update({ 
+            rank_1: rank1,
+            rank_2: rank2,
+            rank_3: rank3,
+            updated_at: new Date()
+        }).eq('sport', sportAbbr);
+        if (error) throw error;
+    } else {
+        const { error } = await supabase.from('sport_results').insert({ 
+            sport: sportAbbr,
+            rank_1: rank1,
+            rank_2: rank2,
+            rank_3: rank3
+        });
+        if (error) throw error;
+    }
+}

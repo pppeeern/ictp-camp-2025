@@ -10,9 +10,11 @@ import { useState } from "react";
 export default function Navigation({
   session,
   displayName,
+  hideLogo = false,
 }: {
   session: Session | null;
   displayName?: string;
+  hideLogo?: boolean;
 }) {
   const [openSched, setOpenSched] = useState<boolean>();
 
@@ -20,7 +22,7 @@ export default function Navigation({
     { name: "กำหนดการ", open: () => setOpenSched(true) },
     { name: "กีฬา", href: "#sports" },
     { name: "การแข่งขัน", href: "#competitions" },
-    { name: "อันดับ", href: "/" },
+    { name: "อันดับ", href: "/leaderboard" },
   ];
 
   const navstyle =
@@ -28,14 +30,17 @@ export default function Navigation({
 
   return (
     <div className="fixed z-50 w-full flex justify-between items-center gap-4 px-5 md:px-10 lg:px-15 pt-12">
-      <Link target="_blank" href="https://www.bj.ac.th/main">
-        <img
-          draggable={false}
-          className="w-12 cursor-pointer drop-shadow-2xl"
-          src="https://www.bj.ac.th/web/assets/images/BJ_LOGO_RE_2563_ENG.png"
-          alt="BJ Logo"
-        />
-      </Link>
+      {!hideLogo && (
+        <Link target="_blank" href="https://www.bj.ac.th/main">
+          <img
+            draggable={false}
+            className="w-12 cursor-pointer drop-shadow-2xl"
+            src="https://www.bj.ac.th/web/assets/images/BJ_LOGO_RE_2563_ENG.png"
+            alt="BJ Logo"
+          />
+        </Link>
+      )}
+      {hideLogo && <div className="w-12" />}
       <div className="w-2xl h-14 rounded-3xl backdrop-blur-lg md:px-4 lg:px-6 flex items-center justify-around bg-linear-to-b from-[#395c69bb] via-[#518696cc] to-[#6a9fa3] border-t border-t-white/60 border-l-2 border-l-white/40 border-r border-r-white/40 border-b border-b-white/30 shadow-lg">
         {nav.map(({ name, href, open }, index) =>
           open ? (

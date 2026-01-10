@@ -15,13 +15,13 @@ export const ColorMap: Record<string, ColorInfo> = {
     shade: "#3c76db",
     color: "สีน้ำเงิน",
   },
-  BD: { name: "นาคราช", hex: "#34a953", shade: "#2e984a", color: "สีเขียว" },
-  NK: {
+  BD: {
     name: "บันฑุราชสีห์",
     hex: "#fbbc04",
     shade: "#e1a903",
     color: "สีเหลือง",
   },
+  NK: { name: "นาคราช", hex: "#34a953", shade: "#2e984a", color: "สีเขียว" },
   GL: { name: "กิเลน", hex: "#fe6d00", shade: "#e46200", color: "สีส้ม" },
   KT: { name: "ครุฑา", hex: "#ea4235", shade: "#d23b2f", color: "สีแดง" },
 };
