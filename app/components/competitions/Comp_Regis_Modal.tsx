@@ -188,11 +188,6 @@ export default function CompRegisModal({
     const data = await res.json();
 
     if (data.success) {
-      console.log(
-        data.action === "created"
-          ? `New team created! Team #${data.team_no}`
-          : `Added to existing team #${data.team_no}`
-      );
       setRefreshTeams((prev) => !prev);
     } else {
       console.error("Failed to register:", data.error);

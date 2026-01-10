@@ -22,6 +22,19 @@ export async function POST(req: NextRequest) {
       query = query.eq("color", color);
     }
 
+    const { data: globalCheck, error: globalError } = await supabase
+      .from("team_members")
+      .select("team_id, teams!inner(comp_id)")
+      .eq("student_id", student_id)
+      .eq("teams.comp_id", comp_id)
+      .maybeSingle();
+
+
+    
+    if (globalCheck) {
+        return NextResponse.json({ success: true, action: "already", team_no });
+    }
+
     const { data: teamData, error: read_error } = await query.maybeSingle();
     if (read_error) {
       console.error("read error:", read_error);

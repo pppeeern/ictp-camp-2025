@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { auth } from "@/auth";
 import { isAdmin } from "../lib/admin";
-import { getLeaderboard, upsertLeaderboardTeam, getSportResults, upsertSportResult } from "../lib/actions";
+import { getLeaderboard, upsertLeaderboardTeam, getSportResults, upsertSportResult, getCompetitionResults, upsertCompetitionResult } from "../lib/actions";
 import { TEAM_NAMES, TEAM_COLORS } from "../lib/constants";
 import { sportdata } from "../components/sports/Sport_Data";
+import { compdata } from "../components/competitions/Comp_Data";
 import { revalidatePath } from "next/cache";
 
 export default async function AdminPage() {
@@ -31,6 +32,14 @@ export default async function AdminPage() {
     });
   }
 
+  const compResults = await getCompetitionResults();
+  const compResultsMap = new Map<string, any>();
+  if (compResults) {
+    compResults.forEach((item: any) => {
+      compResultsMap.set(item.competition, item);
+    });
+  }
+
   async function updateScoreAction(formData: FormData) {
     "use server";
     const name = formData.get("name") as string;
@@ -53,6 +62,19 @@ export default async function AdminPage() {
     }
   }
 
+  async function updateCompResultAction(formData: FormData) {
+    "use server";
+    const compName = formData.get("comp") as string;
+    const rank1 = formData.get("rank1") as string;
+    const rank2 = formData.get("rank2") as string;
+    const rank3 = formData.get("rank3") as string;
+    
+    if (rank1 && rank2 && rank3) {
+       await upsertCompetitionResult(compName, rank1, rank2, rank3);
+       revalidatePath("/admin");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-8 pt-24 font-thai text-gray-800 relative">
       <Link href={"/"}>
@@ -65,6 +87,8 @@ export default async function AdminPage() {
       </Link>
       <div className="max-w-4xl mx-auto space-y-8">
         <h1 className="text-3xl font-bold mb-8 text-[#1E6C74]">Admin Panel</h1>
+
+        {/* Score Management */}
         <div className="bg-white p-6 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold mb-4">อัปเดตคะแนนรวมสี</h2>
           
@@ -118,16 +142,19 @@ export default async function AdminPage() {
           </div>
         </div>
 
+        {/* Sports Result Management */}
         <div className="bg-white p-6 rounded-xl shadow-md">
             <h2 className="text-xl font-semibold mb-4">อัปเดตผลการแข่งขัน (Sports)</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {sportdata.map((sport) => {
                     const result = sportResultsMap.get(sport.abbr);
+                    const sportId = sport.abbr;
+
                     return (
-                        <div key={sport.abbr} className="border border-gray-200 rounded-lg p-5">
+                        <div key={sportId} className="border border-gray-200 rounded-lg p-5">
                             <h3 className="font-bold text-lg text-gray-700 mb-3">{sport.name}</h3>
                             <form action={updateSportResultAction} className="space-y-3">
-                                <input type="hidden" name="sport" value={sport.abbr} />
+                                <input type="hidden" name="sport" value={sportId} />
                                 
                                 {["rank1", "rank2", "rank3"].map((rankName, index) => {
                                     const defaultValue = result ? (index === 0 ? result.rank_1 : index === 1 ? result.rank_2 : result.rank_3) : "";
@@ -150,6 +177,50 @@ export default async function AdminPage() {
                                 })}
 
                                 <button className="w-full mt-2 bg-[#C12882] hover:bg-[#a0226c] text-white font-bold py-2 rounded-lg transition-colors shadow-md">
+                                    บันทึกผล
+                                </button>
+                            </form>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+
+        {/* Competition Result Management */}
+        <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold mb-4">อัปเดตผลการประกวด (Competitions)</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {compdata.map((comp) => {
+                    const result = compResultsMap.get(comp.name);
+                    const compId = comp.name;
+
+                    return (
+                        <div key={compId} className="border border-gray-200 rounded-lg p-5">
+                            <h3 className="font-bold text-lg text-gray-700 mb-3">{comp.name}</h3>
+                            <form action={updateCompResultAction} className="space-y-3">
+                                <input type="hidden" name="comp" value={compId} />
+                                
+                                {["rank1", "rank2", "rank3"].map((rankName, index) => {
+                                    const defaultValue = result ? (index === 0 ? result.rank_1 : index === 1 ? result.rank_2 : result.rank_3) : "";
+                                    const label = index === 0 ? "🥇 อันดับ 1" : index === 1 ? "🥈 อันดับ 2" : "🥉 อันดับ 3";
+                                    return (
+                                        <div key={rankName} className="flex flex-col gap-1">
+                                            <label className="text-sm text-gray-500 font-medium">{label}</label>
+                                            <select 
+                                                name={rankName} 
+                                                defaultValue={defaultValue}
+                                                className="w-full p-2 border border-gray-300 rounded-lg outline-none focus:border-[#C12882]"
+                                            >
+                                                <option value="">-- เลือกสี --</option>
+                                                {TEAM_NAMES.map(team => (
+                                                    <option key={team} value={team}>{team}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    );
+                                })}
+
+                                <button className="w-full mt-2 bg-[#1E6C74] hover:bg-[#165a61] text-white font-bold py-2 rounded-lg transition-colors shadow-md">
                                     บันทึกผล
                                 </button>
                             </form>

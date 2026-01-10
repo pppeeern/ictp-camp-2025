@@ -13,15 +13,36 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { error } = await supabase.from("sport_bet").insert([
-      {
-        student_id: student_id,
-        sport: sport,
-        rank_1: rank_1,
-        rank_2: rank_2,
-        rank_3: rank_3,
-      },
-    ]);
+    const { data: existingBet } = await supabase
+      .from("sport_bet")
+      .select("id")
+      .eq("student_id", student_id)
+      .eq("sport", sport)
+      .maybeSingle();
+
+    let error;
+    if (existingBet) {
+      const { error: updateError } = await supabase
+        .from("sport_bet")
+        .update({
+          rank_1: rank_1,
+          rank_2: rank_2,
+          rank_3: rank_3
+        })
+        .eq("id", existingBet.id);
+      error = updateError;
+    } else {
+      const { error: insertError } = await supabase.from("sport_bet").insert([
+        {
+          student_id: student_id,
+          sport: sport,
+          rank_1: rank_1,
+          rank_2: rank_2,
+          rank_3: rank_3,
+        },
+      ]);
+      error = insertError;
+    }
 
     if (error) return NextResponse.json({ error: error }, { status: 500 });
 

@@ -282,3 +282,42 @@ export async function upsertSportResult(sportAbbr: string, rank1: string, rank2:
         if (error) throw error;
     }
 }
+
+export async function getCompetitionResults() {
+  const { data, error } = await supabase
+    .from('competition_results')
+    .select('*');
+  
+  if (error) {
+      console.error("Error fetching competition results:", error);
+      return [];
+  }
+  return data;
+}
+
+export async function upsertCompetitionResult(compName: string, rank1: string, rank2: string, rank3: string) {
+    const session = await import("@/auth").then((mod) => mod.auth());
+    if (!isAdmin(session?.user?.studentId)) {
+        throw new Error("Unauthorized");
+    }
+
+    const { data: existing } = await supabase.from('competition_results').select('*').eq('competition', compName).maybeSingle();
+
+    if (existing) {
+        const { error } = await supabase.from('competition_results').update({ 
+            rank_1: rank1,
+            rank_2: rank2,
+            rank_3: rank3,
+            updated_at: new Date()
+        }).eq('competition', compName);
+        if (error) throw error;
+    } else {
+        const { error } = await supabase.from('competition_results').insert({ 
+            competition: compName,
+            rank_1: rank1,
+            rank_2: rank2,
+            rank_3: rank3
+        });
+        if (error) throw error;
+    }
+}

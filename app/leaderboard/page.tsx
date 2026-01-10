@@ -2,8 +2,10 @@ import { auth } from "@/auth";
 import { supabase } from "../lib/supabase";
 import Navigation from "../components/Navigation";
 import { StudentType } from "../components/account/AccountData";
-import { getLeaderboard } from "../lib/actions";
+import { getLeaderboard, getSportResults, getCompetitionResults } from "../lib/actions";
 import { TEAM_COLORS } from "../lib/constants";
+import SportResultsDisplay from "../components/SportResultsDisplay";
+import CompetitionResultsDisplay from "../components/CompetitionResultsDisplay";
 
 import Link from "next/link";
 
@@ -22,6 +24,8 @@ export default async function LeaderboardPage() {
   }
 
   const leaderboard = await getLeaderboard();
+  const sportResults = await getSportResults();
+  const compResults = await getCompetitionResults();
 
   return (
     <div className="min-h-screen overflow-hidden flex flex-col bg-[#198e8b] bg-[url('/landing/cyan-bg.webp')] bg-cover bg-top bg-no-repeat font-thai">
@@ -120,6 +124,9 @@ export default async function LeaderboardPage() {
                 </div>
             )}
         </div>
+        
+        <SportResultsDisplay results={sportResults} />
+        <CompetitionResultsDisplay results={compResults} />
       </div>
     </div>
   );
