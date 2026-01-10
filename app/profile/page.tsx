@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { supabase } from "@/app/lib/supabase";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { ColorMap } from "../components/ColorData";
 import { TEAM_COLORS } from "../lib/constants";
 
 export default async function ProfilePage() {
@@ -23,21 +24,19 @@ export default async function ProfilePage() {
   }
 
   let thaiColorName = "Unknown";
+  let displayColor = "#C12882";
+
   if (student.color) {
-    const { data: colorData, error: colorError } = await supabase
-      .from("colorlist")
-      .select("thainame")
-      .or(`name.eq.${student.color},shortname.eq.${student.color}`)
-      .maybeSingle();
-
-    if (colorData) {
-      thaiColorName = colorData.thainame;
-    }
+     const colorKey = student.color.toUpperCase();
+     const colorInfo = ColorMap[colorKey];
+     if (colorInfo) {
+        thaiColorName = colorInfo.name;
+        displayColor = colorInfo.hex;
+     } else {
+         thaiColorName = student.color;
+         displayColor = TEAM_COLORS[student.color] || "#C12882";
+     }
   }
-
-  const colorMap = TEAM_COLORS;
-
-  const displayColor = colorMap[thaiColorName] || student.color || "#C12882";
 
   return (
     <div
