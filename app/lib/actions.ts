@@ -203,17 +203,59 @@ export type LeaderboardItem = {
 
 import { isAdmin } from './admin';
 
+import { TEAM_CODE_TO_NAME } from './constants';
+
 export async function getLeaderboard() {
-  const { data, error } = await supabase
+  const { data: manualScores, error: manualError } = await supabase
     .from('leaderboard')
-    .select('*')
-    .order('score', { ascending: false }); 
+    .select('*');
   
-  if (error) {
-      console.error("Error fetching leaderboard:", error);
+  if (manualError) {
+      console.error("Error fetching leaderboard:", manualError);
       return [];
   }
-  return data as LeaderboardItem[];
+
+  const { data: compPoints, error: compError } = await supabase
+    .from('competition_points')
+    .select('*');
+
+  if (compError) {
+      console.error("Error fetching comp points:", compError);
+  }
+
+  const { data: sportPoints, error: sportError } = await supabase
+    .from('sport_points')
+    .select('*');
+
+  if (sportError) {
+      console.error("Error fetching sport points:", sportError);
+  }
+
+  const totalScores = new Map<string, number>();
+
+  manualScores?.forEach((item) => {
+    totalScores.set(item.team_name, (totalScores.get(item.team_name) || 0) + item.score);
+  });
+
+  compPoints?.forEach((item) => {
+    totalScores.set(item.team_name, (totalScores.get(item.team_name) || 0) + item.points);
+  });
+
+  sportPoints?.forEach((item) => {
+    totalScores.set(item.team_name, (totalScores.get(item.team_name) || 0) + item.points);
+  });
+
+  const leaderboard: LeaderboardItem[] = Array.from(totalScores.entries()).map(([name, score]) => ({
+    id: name,
+    team_name: name,
+    score: score,
+    rank: 0
+  })).sort((a, b) => b.score - a.score);
+  leaderboard.forEach((item, index) => {
+    item.rank = index + 1;
+  });
+
+  return leaderboard;
 }
 
 export async function upsertLeaderboardTeam(teamName: string, score: number) {
@@ -262,6 +304,12 @@ export async function upsertSportResult(sportAbbr: string, rank1: string, rank2:
         throw new Error("Unauthorized");
     }
 
+    if (!rank1 && !rank2 && !rank3) {
+        await supabase.from('sport_results').delete().eq('sport', sportAbbr);
+        await supabase.from('sport_points').delete().eq('sport', sportAbbr);
+        return;
+    }
+
     const { data: existing } = await supabase.from('sport_results').select('*').eq('sport', sportAbbr).maybeSingle();
 
     if (existing) {
@@ -281,6 +329,51 @@ export async function upsertSportResult(sportAbbr: string, rank1: string, rank2:
         });
         if (error) throw error;
     }
+
+    const { data: bets } = await supabase.from('sport_bet').select('*').eq('sport', sportAbbr);
+    if (!bets || bets.length === 0) return;
+
+    const { data: students } = await supabase.from('students').select('student_id, color');
+    if (!students) return;
+
+    const studentTeamMap = new Map<string, string>();
+    students.forEach(s => {
+        if (s.color) {
+            const teamName = TEAM_CODE_TO_NAME[s.color.toUpperCase()];
+            if (teamName) {
+                studentTeamMap.set(s.student_id, teamName);
+            }
+        }
+    });
+
+    const teamPoints = new Map<string, number>();
+
+    bets.forEach(bet => {
+        const teamName = studentTeamMap.get(bet.student_id);
+        if (!teamName) return;
+
+        let points = 0;
+        if (TEAM_CODE_TO_NAME[bet.rank_1] === rank1) points += 5;
+        if (TEAM_CODE_TO_NAME[bet.rank_2] === rank2) points += 3;
+        if (TEAM_CODE_TO_NAME[bet.rank_3] === rank3) points += 1;
+
+        if (points > 0) {
+            teamPoints.set(teamName, (teamPoints.get(teamName) || 0) + points);
+        }
+    });
+
+    await supabase.from('sport_points').delete().eq('sport', sportAbbr);
+
+    if (teamPoints.size > 0) {
+        const pointsToInsert = Array.from(teamPoints.entries()).map(([team, points]) => ({
+            sport: sportAbbr,
+            team_name: team,
+            points: points
+        }));
+
+        const { error: pointError } = await supabase.from('sport_points').insert(pointsToInsert);
+        if (pointError) throw pointError;
+    }
 }
 
 export async function getCompetitionResults() {
@@ -295,10 +388,20 @@ export async function getCompetitionResults() {
   return data;
 }
 
-export async function upsertCompetitionResult(compName: string, rank1: string, rank2: string, rank3: string) {
+export async function upsertCompetitionResult(
+  compName: string, 
+  rank1: string, rank2: string, rank3: string, 
+  rank4: string, rank5: string, rank6: string
+) {
     const session = await import("@/auth").then((mod) => mod.auth());
     if (!isAdmin(session?.user?.studentId)) {
         throw new Error("Unauthorized");
+    }
+
+    if (!rank1 && !rank2 && !rank3 && !rank4 && !rank5 && !rank6) {
+        await supabase.from('competition_results').delete().eq('competition', compName);
+        await supabase.from('competition_points').delete().eq('competition', compName);
+        return;
     }
 
     const { data: existing } = await supabase.from('competition_results').select('*').eq('competition', compName).maybeSingle();
@@ -308,6 +411,9 @@ export async function upsertCompetitionResult(compName: string, rank1: string, r
             rank_1: rank1,
             rank_2: rank2,
             rank_3: rank3,
+            rank_4: rank4,
+            rank_5: rank5,
+            rank_6: rank6,
             updated_at: new Date()
         }).eq('competition', compName);
         if (error) throw error;
@@ -316,8 +422,33 @@ export async function upsertCompetitionResult(compName: string, rank1: string, r
             competition: compName,
             rank_1: rank1,
             rank_2: rank2,
-            rank_3: rank3
+            rank_3: rank3,
+            rank_4: rank4,
+            rank_5: rank5,
+            rank_6: rank6
         });
         if (error) throw error;
+    }
+
+    const pointsMap = [
+      { team: rank1, points: 50 },
+      { team: rank2, points: 40 },
+      { team: rank3, points: 30 },
+      { team: rank4, points: 15 },
+      { team: rank5, points: 15 },
+      { team: rank6, points: 15 },
+    ].filter(p => p.team);
+
+    await supabase.from('competition_points').delete().eq('competition', compName);
+
+    if (pointsMap.length > 0) {
+        const { error: pointError } = await supabase.from('competition_points').insert(
+            pointsMap.map(p => ({
+                competition: compName,
+                team_name: p.team,
+                points: p.points
+            }))
+        );
+        if (pointError) throw pointError;
     }
 }

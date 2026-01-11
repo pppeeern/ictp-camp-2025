@@ -6,6 +6,9 @@ type CompResult = {
     rank_1: string;
     rank_2: string;
     rank_3: string;
+    rank_4?: string;
+    rank_5?: string;
+    rank_6?: string;
 };
 
 export default function CompetitionResultsDisplay({ results }: { results: CompResult[] }) {
@@ -35,6 +38,9 @@ export default function CompetitionResultsDisplay({ results }: { results: CompRe
                                     <ResultRow rank={1} teamName={result.rank_1} />
                                     <ResultRow rank={2} teamName={result.rank_2} />
                                     <ResultRow rank={3} teamName={result.rank_3} />
+                                    {result.rank_4 && <ResultRow rank={4} teamName={result.rank_4} />}
+                                    {result.rank_5 && <ResultRow rank={5} teamName={result.rank_5} />}
+                                    {result.rank_6 && <ResultRow rank={6} teamName={result.rank_6} />}
                                 </div>
                             ) : (
                                 <div className="py-8 text-gray-400 text-sm font-medium italic">
@@ -51,12 +57,12 @@ export default function CompetitionResultsDisplay({ results }: { results: CompRe
 
 function ResultRow({ rank, teamName }: { rank: number; teamName: string }) {
     const color = TEAM_COLORS[teamName] || "#ccc";
-    const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : "🥉";
+    const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : <span className="font-bold text-gray-500 w-6 text-center">{rank}</span>;
     
     return (
         <div className="flex items-center justify-between w-full bg-gray-50 p-2 px-3 rounded-lg border border-gray-100">
             <div className="flex items-center gap-2">
-                <span className="text-xl">{medal}</span>
+                <span className="text-xl flex justify-center items-center w-8">{medal}</span>
                 <span className="font-bold text-gray-700">{teamName}</span>
             </div>
             <div 

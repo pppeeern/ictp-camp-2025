@@ -31,6 +31,7 @@ export const compdata: compType[] = [
     max: 5,
     team_type: "single",
     date: "13 มกราคม 2568",
+    rulebook: "/competitions/rulebook/ZDQCTF_Rulebook.pdf",
     web: "https://zdqctf.lol/",
   },
   {
