@@ -5,6 +5,8 @@ import { sportdata } from "./Sport_Data";
 import { ColorList, ColorMap } from "../ColorData";
 import { StudentType } from "../account/AccountData";
 
+import { getBettingStatus } from "@/app/lib/actions";
+
 export default function SportBetModal({
   student,
   sport_index,
@@ -26,6 +28,7 @@ export default function SportBetModal({
   const [activeRank, setActiveRank] = useState<number>(0);
   const [bet, setBet] = useState<string[]>(["", "", ""]);
   const [hasBet, setHasBet] = useState<boolean>(false);
+  const [isBettingOpen, setIsBettingOpen] = useState<boolean>(true);
 
   const bet_available = bet.includes("");
 
@@ -44,6 +47,9 @@ export default function SportBetModal({
       ];
       setBet(bet_team_data);
       if (bet_data.rank_1) setHasBet(true);
+      
+      const status = await getBettingStatus(sport.abbr);
+      setIsBettingOpen(status);
     }
 
     loadBet();
@@ -79,9 +85,14 @@ export default function SportBetModal({
       onClose={onClose}
       style="relative w-2/3 h-2/3 bg-linear-to-b from-gray-900 to-slate-900 rounded-xl flex flex-col items-center p-4"
     >
-      <h1 className="pt-4 text-3xl font-bold text-white">
+      <h1 className="pt-4 text-3xl font-bold text-white flex items-center gap-3">
         {hasBet ? "ผลทายของคุณ" : "ทายผล"}{" "}
         <span className="font-normal">{`<${sport.name}>`}</span>
+        {!isBettingOpen && (
+            <span className="text-red-500 bg-red-100/10 px-3 py-1 rounded-full text-sm border border-red-500/50">
+                ปิดทายผลแล้วจ้า
+            </span>
+        )}
       </h1>
       <div className="w-full flex-1 grid grid-cols-3 gap-10 pt-6 px-8">
         {bet_rank.map(({ rank }, index) => (
@@ -89,7 +100,7 @@ export default function SportBetModal({
             <div
               key={index}
               onClick={() =>
-                !hasBet && setActiveRank(activeRank == rank ? 0 : rank)
+                isBettingOpen && !hasBet && setActiveRank(activeRank == rank ? 0 : rank)
               }
               style={{
                 background: `linear-gradient(60deg,
@@ -104,9 +115,11 @@ export default function SportBetModal({
               )`,
               }}
               className={`flex flex-col items-center justify-between gap-4 px-4 py-8 w-full h-full rounded-xl ${
+                !isBettingOpen ? "opacity-80 grayscale-30 cursor-not-allowed" : ""
+              } ${
                 hasBet
                   ? ""
-                  : `hover:-translate-y-1.5 hover:scale-105 hover:outline-4 outline-[#C12882] cursor-pointer transition-all`
+                  : isBettingOpen ? `hover:-translate-y-1.5 hover:scale-105 hover:outline-4 outline-[#C12882] cursor-pointer transition-all` : ""
               } ${
                 activeRank === rank
                   ? "outline-4 outline-[#C12882] scale-105 -translate-y-1.5"
@@ -133,7 +146,7 @@ export default function SportBetModal({
                 </div>
               </div>
             </div>
-            {activeRank === rank && (
+            {isBettingOpen && activeRank === rank && (
               <div className="cursor-default z-50 absolute bg-white -bottom-20 rounded-lg flex flex-col p-3 gap-1 shadow-lg -translate-x-15">
                 <div className="flex w-full items-center justify-between">
                   <p className="pl-1 text-sm">เลือกสี อันดับที่ {rank}</p>
@@ -202,7 +215,8 @@ export default function SportBetModal({
       <p className="text-amber-300 pt-3 pb-1">
         คะแนน: อันดับ 1 = 5 | อันดับ 2 = 3 | อันดับ 3 = 1 (ผิด = 0)
       </p>
-      {!hasBet && (
+      
+      {isBettingOpen && !hasBet && (
         <button
           onClick={() => onBet()}
           disabled={bet_available}

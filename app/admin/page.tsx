@@ -129,6 +129,7 @@ export default async function AdminPage() {
                         <div key={sportId} className="border border-gray-200 rounded-lg p-5">
                             <h3 className="font-bold text-lg text-gray-700 mb-3">{sport.name}</h3>
                             <AdminSportForm sportAbbr={sportId} initialRanks={initialRanks} />
+
                         </div>
                     );
                 })}

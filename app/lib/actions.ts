@@ -452,3 +452,31 @@ export async function upsertCompetitionResult(
         if (pointError) throw pointError;
     }
 }
+
+export async function getBettingStatus(sportAbbr: string) {
+  const { data, error } = await supabase
+    .from('sport_settings')
+    .select('is_open')
+    .eq('sport', sportAbbr)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error fetching betting status:", error);
+    return true;
+  }
+  
+  return data ? data.is_open : true;
+}
+
+export async function toggleBettingStatus(sportAbbr: string, isOpen: boolean) {
+    const session = await import("@/auth").then((mod) => mod.auth());
+    if (!isAdmin(session?.user?.studentId)) {
+        throw new Error("Unauthorized");
+    }
+
+    const { error } = await supabase
+        .from('sport_settings')
+        .upsert({ sport: sportAbbr, is_open: isOpen, updated_at: new Date() }, { onConflict: 'sport' });
+
+    if (error) throw error;
+}

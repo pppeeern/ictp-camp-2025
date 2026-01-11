@@ -18,6 +18,8 @@ export default function AdminCompForm({ compName, initialRanks, onUpdate }: Prop
     setRanks(initialRanks);
   }, [initialRanks]);
 
+
+
   const handleChange = (index: number, value: string) => {
     const newRanks = [...ranks];
     newRanks[index] = value;

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition } from "react";
 import { TEAM_NAMES, TEAM_COLORS } from "@/app/lib/constants";
-import { upsertSportResult } from "@/app/lib/actions";
+import { upsertSportResult, getBettingStatus, toggleBettingStatus } from "@/app/lib/actions";
 
 type Props = {
   sportAbbr: string;
@@ -13,10 +13,17 @@ type Props = {
 export default function AdminSportForm({ sportAbbr, initialRanks, onUpdate }: Props) {
   const [ranks, setRanks] = useState<string[]>(initialRanks);
   const [isPending, startTransition] = useTransition();
+  const [isBettingOpen, setIsBettingOpen] = useState(true);
 
   useEffect(() => {
-    setRanks(initialRanks);
-  }, [initialRanks]);
+    getBettingStatus(sportAbbr).then(setIsBettingOpen);
+  }, [sportAbbr]);
+
+  const handleToggleBetting = async () => {
+      const newState = !isBettingOpen;
+      setIsBettingOpen(newState);
+      await toggleBettingStatus(sportAbbr, newState);
+  };
 
   const handleChange = (index: number, value: string) => {
     const newRanks = [...ranks];
@@ -47,8 +54,21 @@ export default function AdminSportForm({ sportAbbr, initialRanks, onUpdate }: Pr
 
   return (
     <div className="space-y-3">
+        <div className="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-200">
+            <span className="text-sm font-medium text-gray-700">สถานะการทายผล</span>
+            <button
+                onClick={handleToggleBetting}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                    isBettingOpen 
+                        ? "bg-green-100 text-green-700 border border-green-200 hover:bg-green-200" 
+                        : "bg-red-100 text-red-700 border border-red-200 hover:bg-red-200"
+                }`}
+            >
+                {isBettingOpen ? "เปิดทายผล" : "ปิดทายผล"}
+            </button>
+        </div>
       {ranks.map((currentVal, index) => {
-        let label = index === 0 ? "🥇 อันดับ 1" : index === 1 ? "🥈 อันดับ 2" : "🥉 อันดับ 3";
+        const label = index === 0 ? "🥇 อันดับ 1" : index === 1 ? "🥈 อันดับ 2" : "🥉 อันดับ 3";
 
         return (
           <div key={index} className="flex flex-col gap-1">

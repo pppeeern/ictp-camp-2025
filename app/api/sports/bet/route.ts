@@ -13,6 +13,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const session = await import("@/auth").then((mod) => mod.auth());
+    if (!session?.user?.studentId || session.user.studentId !== student_id) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { getBettingStatus } = await import("@/app/lib/actions");
+    const isOpen = await getBettingStatus(sport);
+    if (!isOpen) {
+        return NextResponse.json({ error: "ทายไม่ได้แล้วนะจ๊ะ" }, { status: 400 });
+    }
+
     const { data: existingBet } = await supabase
       .from("sport_bet")
       .select("id")
@@ -22,15 +33,7 @@ export async function POST(req: NextRequest) {
 
     let error;
     if (existingBet) {
-      const { error: updateError } = await supabase
-        .from("sport_bet")
-        .update({
-          rank_1: rank_1,
-          rank_2: rank_2,
-          rank_3: rank_3
-        })
-        .eq("id", existingBet.id);
-      error = updateError;
+       return NextResponse.json({ error: "คุณได้ทายผลไปแล้ว" }, { status: 400 });
     } else {
       const { error: insertError } = await supabase.from("sport_bet").insert([
         {
