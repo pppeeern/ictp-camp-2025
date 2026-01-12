@@ -34,7 +34,6 @@ export default async function Collection() {
             name,
             code,
             rarity,
-            icon,
             des
         )
     `
@@ -47,6 +46,10 @@ export default async function Collection() {
   }
 
   const coll = data as unknown as UserCollType;
+  const sort_coll = [...coll].sort(
+    (a, b) =>
+      new Date(b.obtained_at).getTime() - new Date(a.obtained_at).getTime()
+  );
 
   return (
     <div
@@ -90,16 +93,22 @@ export default async function Collection() {
           </div>
         </div>
         <div className="w-full flex-1 p-6 grid grid-cols-4 gap-6 bg-[#cda987] border-8 border-orange-900/70 rounded-3xl shadow-xl shadow-black/20 overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-none [&::-webkit-scrollbar-thumb]:bg-amber-100/50 [&::-webkit-scrollbar-thumb]:rounded-full">
-          {coll.map((c, index) => {
+          {sort_coll.map((c, index) => {
             return (
               <div
                 key={index}
                 title={c.collections.name}
-                className="p-4 aspect-square bg-amber-50 border-4 border-[#cda987] outline-6 outline-amber-50 rounded-xl cursor-pointer hover:outline-[#59A0A8] transition-colors"
+                className="relative group p-4 aspect-square flex justify-center items-center bg-amber-50 border-4 border-[#cda987] outline-6 outline-amber-50 rounded-xl cursor-pointer hover:outline-[#59A0A8] transition-colors"
               >
-                {c.collections.icon && (
-                  <img src={c.collections.icon} alt={c.collections.name} />
-                )}
+                <img
+                  className="group-hover:hidden"
+                  src={`/collections/${c.collections.code}.png`}
+                  alt={c.collections.name}
+                />
+                <div className="text-center rounded-xl hidden group-hover:block">
+                  <p className="text-sm font-bold">{c.collections.des}</p>
+                  <p className="mt-2 text-xs text-gray-500">{c.obtained_at}</p>
+                </div>
               </div>
             );
           })}

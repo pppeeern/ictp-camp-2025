@@ -38,7 +38,7 @@ export const colldata: Colltype[] = [
   {
     name: "ARC25",
     des: "ค่ายพัฒนาอัจฉริยภาพหุ่นยนต์อัตโนมัติ (Automatic-Robot Camp 2025)",
-    date: "17-18 สิงหาคม 2568",
+    date: "18-19 สิงหาคม 2568",
   },
   {
     name: "พี่เบญจันท์",
