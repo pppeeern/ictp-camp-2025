@@ -66,7 +66,7 @@ export default async function AdminPage() {
 
         <div className="bg-white p-6 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold mb-4">อัปเดตคะแนนรวมสี</h2>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -78,39 +78,39 @@ export default async function AdminPage() {
               </thead>
               <tbody>
                 {TEAM_NAMES.map((teamName) => {
-                    const currentScore = teamScores.get(teamName) || 0;
-                    return (
-                        <tr key={teamName} className="border-b last:border-0 hover:bg-gray-50">
-                            <td className="p-3">
-                                <div className="flex items-center gap-3">
-                                    <div
-                                        className="w-6 h-6 rounded-full border border-gray-200"
-                                        style={{ backgroundColor: TEAM_COLORS[teamName] || '#ccc' }}
-                                    />
-                                    <span className="font-medium">{teamName}</span>
-                                </div>
-                            </td>
-                            <td className="p-3">
-                                <form action={updateScoreAction} className="flex items-center gap-4 w-full">
-                                    <input type="hidden" name="name" value={teamName} />
-                                    <input
-                                        type="number"
-                                        name="score"
-                                        defaultValue={currentScore}
-                                        className="w-32 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#C12882] outline-none text-right font-mono"
-                                    />
-                                    <button className="bg-[#1E6C74] hover:bg-[#165a61] text-white font-bold px-4 py-2 rounded-lg transition-colors text-sm">
-                                        อัปเดต
-                                    </button>
-                                </form>
-                            </td>
-                            <td className="p-3 text-right">
-                                <span className="text-xs text-gray-400">
-                                    {teamScores.has(teamName) ? "Active" : "No Data"}
-                                </span>
-                            </td>
-                        </tr>
-                    );
+                  const currentScore = teamScores.get(teamName) || 0;
+                  return (
+                    <tr key={teamName} className="border-b last:border-0 hover:bg-gray-50">
+                      <td className="p-3">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="w-6 h-6 rounded-full border border-gray-200"
+                            style={{ backgroundColor: TEAM_COLORS[teamName] || '#ccc' }}
+                          />
+                          <span className="font-medium">{teamName}</span>
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <form action={updateScoreAction} className="flex items-center gap-4 w-full">
+                          <input type="hidden" name="name" value={teamName} />
+                          <input
+                            type="number"
+                            name="score"
+                            defaultValue={currentScore}
+                            className="w-32 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#C12882] outline-none text-right font-mono"
+                          />
+                          <button className="bg-[#1E6C74] hover:bg-[#165a61] text-white font-bold px-4 py-2 rounded-lg transition-colors text-sm">
+                            อัปเดต
+                          </button>
+                        </form>
+                      </td>
+                      <td className="p-3 text-right">
+                        <span className="text-xs text-gray-400">
+                          {teamScores.has(teamName) ? "Active" : "No Data"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
                 })}
               </tbody>
             </table>
@@ -118,43 +118,43 @@ export default async function AdminPage() {
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow-md">
-            <h2 className="text-xl font-semibold mb-4">อัปเดตผลการแข่งขัน (Sports)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {sportdata.map((sport) => {
-                    const result = sportResultsMap.get(sport.abbr);
-                    const sportId = sport.abbr;
-                    const initialRanks = result ? [result.rank_1, result.rank_2, result.rank_3] : ["", "", ""];
+          <h2 className="text-xl font-semibold mb-4">อัปเดตผลการแข่งขัน (Sports)</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {sportdata.map((sport) => {
+              const result = sportResultsMap.get(sport.abbr);
+              const sportId = sport.abbr;
+              const initialRanks = result ? [result.rank_1, result.rank_2, result.rank_3] : ["", "", ""];
 
-                    return (
-                        <div key={sportId} className="border border-gray-200 rounded-lg p-5">
-                            <h3 className="font-bold text-lg text-gray-700 mb-3">{sport.name}</h3>
-                            <AdminSportForm sportAbbr={sportId} initialRanks={initialRanks} />
+              return (
+                <div key={sportId} className="border border-gray-200 rounded-lg p-5">
+                  <h3 className="font-bold text-lg text-gray-700 mb-3">{sport.name}</h3>
+                  <AdminSportForm sportAbbr={sportId} initialRanks={initialRanks} />
 
-                        </div>
-                    );
-                })}
-            </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         <div className="bg-white p-6 rounded-xl shadow-md">
-            <h2 className="text-xl font-semibold mb-4">อัปเดตผลการประกวด (Competitions)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {compdata.map((comp) => {
-                    const result = compResultsMap.get(comp.name);
-                    const compId = comp.name;
-                    const initialRanks = result ? [
-                        result.rank_1, result.rank_2, result.rank_3,
-                        result.rank_4, result.rank_5, result.rank_6
-                    ] : ["", "", "", "", "", ""];
+          <h2 className="text-xl font-semibold mb-4">อัปเดตผลการประกวด (Competitions)</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {compdata.map((comp) => {
+              const result = compResultsMap.get(comp.name);
+              const compId = comp.name;
+              const initialRanks = result ? [
+                result.rank_1, result.rank_2, result.rank_3,
+                result.rank_4, result.rank_5, result.rank_6
+              ] : ["", "", "", "", "", ""];
 
-                    return (
-                        <div key={compId} className="border border-gray-200 rounded-lg p-5">
-                            <h3 className="font-bold text-lg text-gray-700 mb-3">{comp.name}</h3>
-                            <AdminCompForm compName={compId} initialRanks={initialRanks} />
-                        </div>
-                    );
-                })}
-            </div>
+              return (
+                <div key={compId} className="border border-gray-200 rounded-lg p-5">
+                  <h3 className="font-bold text-lg text-gray-700 mb-3">{comp.name}</h3>
+                  <AdminCompForm compName={compId} initialRanks={initialRanks} />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

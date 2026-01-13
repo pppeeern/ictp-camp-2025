@@ -1,5 +1,5 @@
 'use server'
- 
+
 import { signIn } from '@/auth'
 import { AuthError } from 'next-auth'
 import { z } from 'zod'
@@ -30,16 +30,16 @@ export async function register(prevState: RegisterState | null, formData: FormDa
     pin: formData.get('pin'),
     confirmPin: formData.get('confirmPin'),
   })
- 
+
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'กรุณากรอกข้อมูลให้ถูกต้องครบถ้วน'
     };
   }
- 
+
   const { studentId, pin } = validatedFields.data;
-  
+
   try {
     const { data: existingStudent, error: fetchError } = await supabase
       .from('students')
@@ -48,16 +48,16 @@ export async function register(prevState: RegisterState | null, formData: FormDa
       .maybeSingle()
 
     if (fetchError) {
-        console.error('Supabase fetch error:', fetchError);
-        return { message: 'เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล' };
+      console.error('Supabase fetch error:', fetchError);
+      return { message: 'เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล' };
     }
 
     if (!existingStudent) {
-        return { message: 'ไม่พบข้อมูลนักเรียนในระบบ' };
+      return { message: 'ไม่พบข้อมูลนักเรียนในระบบ' };
     }
 
     if (existingStudent.pin) {
-        return { message: 'บัญชีนี้ถูกลงทะเบียนแล้ว กรุณาไปที่หน้าเข้าสู่ระบบ' };
+      return { message: 'บัญชีนี้ถูกลงทะเบียนแล้ว กรุณาไปที่หน้าเข้าสู่ระบบ' };
     }
 
     const hashedPassword = await bcrypt.hash(pin, 10);
@@ -68,8 +68,8 @@ export async function register(prevState: RegisterState | null, formData: FormDa
       .eq('id', existingStudent.id)
 
     if (error) {
-        console.error('Supabase update error:', error)
-        throw new Error('ไม่สามารถอัปเดตข้อมูลได้')
+      console.error('Supabase update error:', error)
+      throw new Error('ไม่สามารถอัปเดตข้อมูลได้')
     }
 
   } catch (error) {
@@ -79,9 +79,9 @@ export async function register(prevState: RegisterState | null, formData: FormDa
 
   try {
     await signIn('credentials', {
-        studentId,
-        pin,
-        redirectTo: '/',
+      studentId,
+      pin,
+      redirectTo: '/',
     })
     return { message: null };
   } catch (error) {
@@ -104,11 +104,11 @@ export async function authenticate(
   try {
     const studentId = formData.get('studentId');
     const pin = formData.get('pin');
-    
+
     await signIn('credentials', {
-        studentId,
-        pin,
-        redirectTo: '/',
+      studentId,
+      pin,
+      redirectTo: '/',
     })
   } catch (error) {
     if (error instanceof AuthError) {
@@ -153,44 +153,44 @@ export async function changePin(
   });
 
   if (!validatedFields.success) {
-     const errorMessages = validatedFields.error.flatten().fieldErrors;
-     const firstError = Object.values(errorMessages).flat()[0];
-     return { message: firstError || 'ข้อมูลไม่ถูกต้อง' };
+    const errorMessages = validatedFields.error.flatten().fieldErrors;
+    const firstError = Object.values(errorMessages).flat()[0];
+    return { message: firstError || 'ข้อมูลไม่ถูกต้อง' };
   }
 
   const { oldPin, newPin } = validatedFields.data;
 
   try {
-     const { data: student, error: fetchError } = await supabase
+    const { data: student, error: fetchError } = await supabase
       .from('students')
       .select('id, pin')
       .eq('student_id', session.user.studentId)
       .single();
 
-     if (fetchError || !student) {
-        return { message: 'ไม่พบข้อมูลผู้ใช้' };
-     }
+    if (fetchError || !student) {
+      return { message: 'ไม่พบข้อมูลผู้ใช้' };
+    }
 
-     const isPasswordValid = await bcrypt.compare(oldPin, student.pin);
-     if (!isPasswordValid) {
-        return { message: 'รหัส PIN เดิมไม่ถูกต้อง' };
-     }
+    const isPasswordValid = await bcrypt.compare(oldPin, student.pin);
+    if (!isPasswordValid) {
+      return { message: 'รหัส PIN เดิมไม่ถูกต้อง' };
+    }
 
-     const hashedNewPin = await bcrypt.hash(newPin, 10);
-     const { error: updateError } = await supabase
-       .from('students')
-       .update({ pin: hashedNewPin })
-       .eq('id', student.id);
+    const hashedNewPin = await bcrypt.hash(newPin, 10);
+    const { error: updateError } = await supabase
+      .from('students')
+      .update({ pin: hashedNewPin })
+      .eq('id', student.id);
 
-     if (updateError) {
-        return { message: 'ไม่สามารถเปลี่ยนรหัส PIN ได้' };
-     }
+    if (updateError) {
+      return { message: 'ไม่สามารถเปลี่ยนรหัส PIN ได้' };
+    }
 
-     return { message: 'เปลี่ยนรหัส PIN สำเร็จ', success: true };
+    return { message: 'เปลี่ยนรหัส PIN สำเร็จ', success: true };
 
   } catch (error) {
-     console.error('Change PIN error:', error);
-     return { message: 'เกิดข้อผิดพลาดบางอย่าง' };
+    console.error('Change PIN error:', error);
+    return { message: 'เกิดข้อผิดพลาดบางอย่าง' };
   }
 }
 
@@ -209,10 +209,10 @@ export async function getLeaderboard() {
   const { data: manualScores, error: manualError } = await supabase
     .from('leaderboard')
     .select('*');
-  
+
   if (manualError) {
-      console.error("Error fetching leaderboard:", manualError);
-      return [];
+    console.error("Error fetching leaderboard:", manualError);
+    return [];
   }
 
   const { data: compPoints, error: compError } = await supabase
@@ -220,7 +220,7 @@ export async function getLeaderboard() {
     .select('*');
 
   if (compError) {
-      console.error("Error fetching comp points:", compError);
+    console.error("Error fetching comp points:", compError);
   }
 
   const { data: sportPoints, error: sportError } = await supabase
@@ -228,7 +228,7 @@ export async function getLeaderboard() {
     .select('*');
 
   if (sportError) {
-      console.error("Error fetching sport points:", sportError);
+    console.error("Error fetching sport points:", sportError);
   }
 
   const totalScores = new Map<string, number>();
@@ -259,96 +259,116 @@ export async function getLeaderboard() {
 }
 
 export async function upsertLeaderboardTeam(teamName: string, score: number) {
-    const session = await import("@/auth").then((mod) => mod.auth());
-    if (!isAdmin(session?.user?.studentId)) {
-        throw new Error("Unauthorized");
-    }
+  const session = await import("@/auth").then((mod) => mod.auth());
+  if (!isAdmin(session?.user?.studentId)) {
+    throw new Error("Unauthorized");
+  }
 
-    const { data: existing } = await supabase.from('leaderboard').select('*').eq('team_name', teamName).maybeSingle();
+  const { data: existing } = await supabase.from('leaderboard').select('*').eq('team_name', teamName).maybeSingle();
 
-    if (existing) {
-        const { error } = await supabase.from('leaderboard').update({ score, updated_at: new Date() }).eq('team_name', teamName);
-        if (error) throw error;
-    } else {
-        const { error } = await supabase.from('leaderboard').insert({ team_name: teamName, score });
-        if (error) throw error;
-    }
+  if (existing) {
+    const { error } = await supabase.from('leaderboard').update({ score, updated_at: new Date() }).eq('team_name', teamName);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase.from('leaderboard').insert({ team_name: teamName, score });
+    if (error) throw error;
+  }
 }
 
 
 export async function deleteLeaderboardTeam(id: string) {
-    const session = await import("@/auth").then((mod) => mod.auth());
-    if (!isAdmin(session?.user?.studentId)) {
-        throw new Error("Unauthorized");
-    }
+  const session = await import("@/auth").then((mod) => mod.auth());
+  if (!isAdmin(session?.user?.studentId)) {
+    throw new Error("Unauthorized");
+  }
 
-    const { error } = await supabase.from('leaderboard').delete().eq('id', id);
-    if (error) throw error;
+  const { error } = await supabase.from('leaderboard').delete().eq('id', id);
+  if (error) throw error;
 }
 
 export async function getSportResults() {
   const { data, error } = await supabase
     .from('sport_results')
     .select('*');
-  
+
   if (error) {
-      console.error("Error fetching sport results:", error);
-      return [];
+    console.error("Error fetching sport results:", error);
+    return [];
   }
   return data;
 }
 
-export async function upsertSportResult(sportAbbr: string, rank1: string, rank2: string, rank3: string) {
-    const session = await import("@/auth").then((mod) => mod.auth());
-    if (!isAdmin(session?.user?.studentId)) {
-        throw new Error("Unauthorized");
-    }
+export async function upsertSportResult(
+  sportAbbr: string,
+  rank1: string, rank2: string, rank3: string,
+  rank4: string, rank5: string, rank6: string
+) {
+  const session = await import("@/auth").then((mod) => mod.auth());
+  if (!isAdmin(session?.user?.studentId)) {
+    throw new Error("Unauthorized");
+  }
 
-    if (!rank1 && !rank2 && !rank3) {
-        await supabase.from('sport_results').delete().eq('sport', sportAbbr);
-        await supabase.from('sport_points').delete().eq('sport', sportAbbr);
-        return;
-    }
+  if (!rank1 && !rank2 && !rank3 && !rank4 && !rank5 && !rank6) {
+    await supabase.from('sport_results').delete().eq('sport', sportAbbr);
+    await supabase.from('sport_points').delete().eq('sport', sportAbbr);
+    return;
+  }
 
-    const { data: existing } = await supabase.from('sport_results').select('*').eq('sport', sportAbbr).maybeSingle();
+  const { data: existing } = await supabase.from('sport_results').select('*').eq('sport', sportAbbr).maybeSingle();
 
-    if (existing) {
-        const { error } = await supabase.from('sport_results').update({ 
-            rank_1: rank1,
-            rank_2: rank2,
-            rank_3: rank3,
-            updated_at: new Date()
-        }).eq('sport', sportAbbr);
-        if (error) throw error;
-    } else {
-        const { error } = await supabase.from('sport_results').insert({ 
-            sport: sportAbbr,
-            rank_1: rank1,
-            rank_2: rank2,
-            rank_3: rank3
-        });
-        if (error) throw error;
-    }
-
-    const { data: bets } = await supabase.from('sport_bet').select('*').eq('sport', sportAbbr);
-    if (!bets || bets.length === 0) return;
-
-    const { data: students } = await supabase.from('students').select('student_id, color');
-    if (!students) return;
-
-    const studentTeamMap = new Map<string, string>();
-    students.forEach(s => {
-        if (s.color) {
-            const teamName = TEAM_CODE_TO_NAME[s.color.toUpperCase()];
-            if (teamName) {
-                studentTeamMap.set(s.student_id, teamName);
-            }
-        }
+  if (existing) {
+    const { error } = await supabase.from('sport_results').update({
+      rank_1: rank1,
+      rank_2: rank2,
+      rank_3: rank3,
+      updated_at: new Date()
+    }).eq('sport', sportAbbr);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase.from('sport_results').insert({
+      sport: sportAbbr,
+      rank_1: rank1,
+      rank_2: rank2,
+      rank_3: rank3
     });
+    if (error) throw error;
+  }
 
-    const teamPoints = new Map<string, number>();
+  // Calculate points for winning teams
+  const teamPoints = new Map<string, number>();
 
-    bets.forEach(bet => {
+  const performancePoints = [
+    { team: rank1, points: 50 },
+    { team: rank2, points: 40 },
+    { team: rank3, points: 30 },
+    { team: rank4, points: 15 },
+    { team: rank5, points: 15 },
+    { team: rank6, points: 15 },
+  ];
+
+  performancePoints.forEach(p => {
+    if (p.team) {
+      teamPoints.set(p.team, (teamPoints.get(p.team) || 0) + p.points);
+    }
+  });
+
+  // Calculate points from bets
+  const { data: bets } = await supabase.from('sport_bet').select('*').eq('sport', sportAbbr);
+  if (bets && bets.length > 0) {
+    const { data: students } = await supabase.from('students').select('student_id, color');
+
+    if (students) {
+      const studentTeamMap = new Map<string, string>();
+      students.forEach(s => {
+        if (s.color) {
+          const teamName = TEAM_CODE_TO_NAME[s.color.toUpperCase()];
+          if (teamName) {
+            studentTeamMap.set(s.student_id, teamName);
+          }
+        }
+      });
+
+      bets.forEach(bet => {
         const teamName = studentTeamMap.get(bet.student_id);
         if (!teamName) return;
 
@@ -358,99 +378,101 @@ export async function upsertSportResult(sportAbbr: string, rank1: string, rank2:
         if (TEAM_CODE_TO_NAME[bet.rank_3] === rank3) points += 1;
 
         if (points > 0) {
-            teamPoints.set(teamName, (teamPoints.get(teamName) || 0) + points);
+          teamPoints.set(teamName, (teamPoints.get(teamName) || 0) + points);
         }
-    });
-
-    await supabase.from('sport_points').delete().eq('sport', sportAbbr);
-
-    if (teamPoints.size > 0) {
-        const pointsToInsert = Array.from(teamPoints.entries()).map(([team, points]) => ({
-            sport: sportAbbr,
-            team_name: team,
-            points: points
-        }));
-
-        const { error: pointError } = await supabase.from('sport_points').insert(pointsToInsert);
-        if (pointError) throw pointError;
+      });
     }
+  }
+
+  await supabase.from('sport_points').delete().eq('sport', sportAbbr);
+
+  if (teamPoints.size > 0) {
+    const pointsToInsert = Array.from(teamPoints.entries()).map(([team, points]) => ({
+      sport: sportAbbr,
+      team_name: team,
+      points: points
+    }));
+
+    const { error: pointError } = await supabase.from('sport_points').insert(pointsToInsert);
+    if (pointError) throw pointError;
+  }
 }
 
 export async function getCompetitionResults() {
   const { data, error } = await supabase
     .from('competition_results')
     .select('*');
-  
+
   if (error) {
-      console.error("Error fetching competition results:", error);
-      return [];
+    console.error("Error fetching competition results:", error);
+    return [];
   }
   return data;
 }
 
 export async function upsertCompetitionResult(
-  compName: string, 
-  rank1: string, rank2: string, rank3: string, 
+  compName: string,
+  rank1: string, rank2: string, rank3: string,
   rank4: string, rank5: string, rank6: string
 ) {
-    const session = await import("@/auth").then((mod) => mod.auth());
-    if (!isAdmin(session?.user?.studentId)) {
-        throw new Error("Unauthorized");
-    }
+  const session = await import("@/auth").then((mod) => mod.auth());
+  if (!isAdmin(session?.user?.studentId)) {
+    throw new Error("Unauthorized");
+  }
 
-    if (!rank1 && !rank2 && !rank3 && !rank4 && !rank5 && !rank6) {
-        await supabase.from('competition_results').delete().eq('competition', compName);
-        await supabase.from('competition_points').delete().eq('competition', compName);
-        return;
-    }
-
-    const { data: existing } = await supabase.from('competition_results').select('*').eq('competition', compName).maybeSingle();
-
-    if (existing) {
-        const { error } = await supabase.from('competition_results').update({ 
-            rank_1: rank1,
-            rank_2: rank2,
-            rank_3: rank3,
-            rank_4: rank4,
-            rank_5: rank5,
-            rank_6: rank6,
-            updated_at: new Date()
-        }).eq('competition', compName);
-        if (error) throw error;
-    } else {
-        const { error } = await supabase.from('competition_results').insert({ 
-            competition: compName,
-            rank_1: rank1,
-            rank_2: rank2,
-            rank_3: rank3,
-            rank_4: rank4,
-            rank_5: rank5,
-            rank_6: rank6
-        });
-        if (error) throw error;
-    }
-
-    const pointsMap = [
-      { team: rank1, points: 50 },
-      { team: rank2, points: 40 },
-      { team: rank3, points: 30 },
-      { team: rank4, points: 15 },
-      { team: rank5, points: 15 },
-      { team: rank6, points: 15 },
-    ].filter(p => p.team);
-
+  if (!rank1 && !rank2 && !rank3 && !rank4 && !rank5 && !rank6) {
+    await supabase.from('competition_results').delete().eq('competition', compName);
     await supabase.from('competition_points').delete().eq('competition', compName);
+    return;
+  }
 
-    if (pointsMap.length > 0) {
-        const { error: pointError } = await supabase.from('competition_points').insert(
-            pointsMap.map(p => ({
-                competition: compName,
-                team_name: p.team,
-                points: p.points
-            }))
-        );
-        if (pointError) throw pointError;
-    }
+  const { data: existing } = await supabase.from('competition_results').select('*').eq('competition', compName).maybeSingle();
+
+  if (existing) {
+    const { error } = await supabase.from('competition_results').update({
+      rank_1: rank1,
+      rank_2: rank2,
+      rank_3: rank3,
+      rank_4: rank4,
+      rank_5: rank5,
+      rank_6: rank6,
+      updated_at: new Date()
+    }).eq('competition', compName);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase.from('competition_results').insert({
+      competition: compName,
+      rank_1: rank1,
+      rank_2: rank2,
+      rank_3: rank3,
+      rank_4: rank4,
+      rank_5: rank5,
+      rank_6: rank6
+    });
+    if (error) throw error;
+  }
+
+  const pointsMap = [
+    { team: rank1, points: 50 },
+    { team: rank2, points: 40 },
+    { team: rank3, points: 30 },
+    { team: rank4, points: 15 },
+    { team: rank5, points: 15 },
+    { team: rank6, points: 15 },
+  ].filter(p => p.team);
+
+  await supabase.from('competition_points').delete().eq('competition', compName);
+
+  if (pointsMap.length > 0) {
+    const { error: pointError } = await supabase.from('competition_points').insert(
+      pointsMap.map(p => ({
+        competition: compName,
+        team_name: p.team,
+        points: p.points
+      }))
+    );
+    if (pointError) throw pointError;
+  }
 }
 
 export async function getBettingStatus(sportAbbr: string) {
@@ -464,19 +486,19 @@ export async function getBettingStatus(sportAbbr: string) {
     console.error("Error fetching betting status:", error);
     return true;
   }
-  
+
   return data ? data.is_open : true;
 }
 
 export async function toggleBettingStatus(sportAbbr: string, isOpen: boolean) {
-    const session = await import("@/auth").then((mod) => mod.auth());
-    if (!isAdmin(session?.user?.studentId)) {
-        throw new Error("Unauthorized");
-    }
+  const session = await import("@/auth").then((mod) => mod.auth());
+  if (!isAdmin(session?.user?.studentId)) {
+    throw new Error("Unauthorized");
+  }
 
-    const { error } = await supabase
-        .from('sport_settings')
-        .upsert({ sport: sportAbbr, is_open: isOpen, updated_at: new Date() }, { onConflict: 'sport' });
+  const { error } = await supabase
+    .from('sport_settings')
+    .upsert({ sport: sportAbbr, is_open: isOpen, updated_at: new Date() }, { onConflict: 'sport' });
 
-    if (error) throw error;
+  if (error) throw error;
 }
