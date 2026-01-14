@@ -50,11 +50,11 @@ export default function SportLanding({
           />
         </div>
       </div>
-      <div className="w-5/6 md:w-9/10 grid md:grid-cols-3 gap-5">
+      <div className="w-5/6 md:w-9/10 flex flex-wrap justify-center gap-5">
         {sportdata.map(({ name, abbr, date, mem, dur }, index) => (
           <div
             key={index}
-            className="relative flex flex-col items-center gap-4 py-10 px-10 rounded-xl bg-amber-100 aspect-square shadow-lg"
+            className="relative flex flex-col items-center gap-4 py-10 px-10 rounded-xl bg-amber-100 aspect-square shadow-lg w-full md:w-96"
           >
             <div className="w-full text-center text-4xl font-bold">{name}</div>
             <div className="w-full aspect-3/2 bg-amber-200 rounded-xl border-6 border-[#C12882] overflow-clip">
@@ -73,8 +73,8 @@ export default function SportLanding({
                   {index === 1
                     ? "ทีมละ " + mem + " คน"
                     : index === 2
-                    ? "รอบละ " + dur + " นาที"
-                    : e}
+                      ? "รอบละ " + dur + " นาที"
+                      : e}
                 </div>
               ))}
             </div>

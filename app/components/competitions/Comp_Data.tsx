@@ -69,23 +69,7 @@ export const compdata: compType[] = [
     date: "14 มกราคม 2568",
     rulebook: "/competitions/rulebook/RoboMission_Rulebook.pdf",
   },
-  {
-    name: "GenEn",
-    tag: "วิศวกรรม",
-    logo: "/competitions/GenEn.png",
-    des: `การแข่งขันตอบปัญหาเชิงวิศวกรรม ในรูปแบบเกมโชว์`,
-    req: (
-      <p>
-        1. นักเรียนชั้นมัธยมศึกษาปีที่ 4-5 <br />
-        2. ประเภททีม ทีมละ 4 คน สีละ 2 ทีม
-      </p>
-    ),
-    min: 4,
-    max: 4,
-    team_type: "duo",
-    date: "14 มกราคม 2568",
-    rulebook: "/competitions/rulebook/GenEn_Rulebook.pdf",
-  },
+
   {
     name: "เย็นตาโฟโต้",
     tag: "ถ่ายภาพ",
@@ -101,6 +85,7 @@ export const compdata: compType[] = [
     max: 100,
     team_type: "solo",
     date: "13-14 มกราคม 2568",
+    rulebook: "/competitions/rulebook/YenTaPhoto_Rulebook.pdf",
     upl: "https://drive.google.com/drive/folders/1qG56fmBw9oXX5V3lP-0fG0YYKIKGdmKz?usp=sharing",
   },
 ];

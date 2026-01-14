@@ -15,17 +15,17 @@ export default function SportResultsDisplay({ results }: { results: SportResult[
     const resultsMap = new Map(results.map(r => [r.sport, r]));
 
     return (
-        <div className="w-full max-w-4xl mt-12 px-4 md:px-0">
+        <div className="w-full max-w-4xl mt-12 px-4 md:px-0 mx-auto">
             <h2 className="text-3xl md:text-5xl font-bold text-white text-center mb-8 text-shadow-lg drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
                 ผลการแข่งขันกีฬา
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex flex-wrap justify-center gap-6">
                 {sportdata.map((sport) => {
                     const result = resultsMap.get(sport.abbr);
 
                     return (
-                        <div key={sport.abbr} className="bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/50 flex flex-col items-center gap-4 hover:scale-[1.02] transition-transform duration-300">
+                        <div key={sport.abbr} className="w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/50 flex flex-col items-center gap-4 hover:scale-[1.02] transition-transform duration-300">
                             <h3 className="text-xl font-bold text-[#1E6C74]">{sport.name}</h3>
                             <div className="w-full h-[1px] bg-gray-200"></div>
 

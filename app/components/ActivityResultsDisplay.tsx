@@ -1,5 +1,5 @@
 import { TEAM_COLORS } from "../lib/constants";
-import { compdata } from "./competitions/Comp_Data";
+import { activityData } from "./activities/Activity_Data";
 
 type CompResult = {
     competition: string;
@@ -11,25 +11,25 @@ type CompResult = {
     rank_6?: string;
 };
 
-export default function CompetitionResultsDisplay({ results }: { results: CompResult[] }) {
+export default function ActivityResultsDisplay({ results }: { results: CompResult[] }) {
     const resultsMap = new Map(results.map(r => [r.competition, r]));
 
     return (
-        <div className="w-full max-w-4xl mt-12 px-4 md:px-0 pb-20 mx-auto">
+        <div className="w-full max-w-4xl mt-12 px-4 md:px-0 mx-auto">
             <h2 className="text-3xl md:text-5xl font-bold text-white text-center mb-8 text-shadow-lg drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
-                ผลการประกวดแข่งขัน
+                กิจกรรมฐาน
             </h2>
 
             <div className="flex flex-wrap justify-center gap-6">
-                {compdata.map((comp) => {
-                    const result = resultsMap.get(comp.name);
+                {activityData.map((activity) => {
+                    const result = resultsMap.get(activity.name);
 
                     return (
-                        <div key={comp.name} className="w-full md:w-[calc(50%-12px)] max-w-md bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/50 flex flex-col items-center gap-4 hover:scale-[1.02] transition-transform duration-300">
+                        <div key={activity.name} className="w-full md:w-[calc(50%-12px)] max-w-md bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-white/50 flex flex-col items-center gap-4 hover:scale-[1.02] transition-transform duration-300">
                             <div className="flex flex-col items-center">
-                                <img src={comp.logo} alt={comp.name} className="h-16 object-contain mb-2" />
-                                <h3 className="text-xl font-bold text-[#1E6C74]">{comp.name}</h3>
-                                <span className="text-sm text-gray-500 font-medium">{comp.tag}</span>
+                                {activity.logo && <img src={activity.logo} alt={activity.name} className="h-16 object-contain mb-2" />}
+                                <h3 className="text-xl font-bold text-[#1E6C74]">{activity.name}</h3>
+                                <span className="text-sm text-gray-500 font-medium">{activity.tag}</span>
                             </div>
                             <div className="w-full h-[1px] bg-gray-200"></div>
 

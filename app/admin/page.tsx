@@ -5,6 +5,7 @@ import { getLeaderboard, upsertLeaderboardTeam, getSportResults, upsertSportResu
 import { TEAM_NAMES, TEAM_COLORS } from "../lib/constants";
 import { sportdata } from "../components/sports/Sport_Data";
 import { compdata } from "../components/competitions/Comp_Data";
+import { activityData } from "../components/activities/Activity_Data";
 import { revalidatePath } from "next/cache";
 import AdminCompForm from "../components/admin/AdminCompForm";
 import AdminSportForm from "../components/admin/AdminSportForm";
@@ -151,6 +152,27 @@ export default async function AdminPage() {
                 <div key={compId} className="border border-gray-200 rounded-lg p-5">
                   <h3 className="font-bold text-lg text-gray-700 mb-3">{comp.name}</h3>
                   <AdminCompForm compName={compId} initialRanks={initialRanks} />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-xl font-semibold mb-4">อัปเดตผลกิจกรรมฐาน (Activities)</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {activityData.map((activity) => {
+              const result = compResultsMap.get(activity.name);
+              const activityId = activity.name;
+              const initialRanks = result ? [
+                result.rank_1, result.rank_2, result.rank_3,
+                result.rank_4, result.rank_5, result.rank_6
+              ] : ["", "", "", "", "", ""];
+
+              return (
+                <div key={activityId} className="border border-gray-200 rounded-lg p-5">
+                  <h3 className="font-bold text-lg text-gray-700 mb-3">{activity.name}</h3>
+                  <AdminCompForm compName={activityId} initialRanks={initialRanks} />
                 </div>
               );
             })}

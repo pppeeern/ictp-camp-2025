@@ -49,7 +49,7 @@ export default function CompLanding({
           />
         </div>
       </div>
-      <div className="z-10 w-full h-full min-h-0 px-15 py-10 grid md:grid-cols-5 gap-2">
+      <div className="z-10 w-full h-full min-h-0 px-15 py-10 flex flex-wrap justify-center gap-6">
         {comp.map(({ name, tag, logo, des }, index) => (
           <div
             onClick={() => {
@@ -57,7 +57,7 @@ export default function CompLanding({
               setModalPage("detail");
             }}
             key={index}
-            className="min-h-0 h-120 flex flex-col items-center justify-between py-8 px-6 bg-amber-100 rounded-xl transition-all duration-200 cursor-pointer hover:-translate-y-1.5 hover:drop-shadow-xl drop-shadow-black/50"
+            className="min-h-0 h-120 w-full sm:w-80 flex flex-col items-center justify-between py-8 px-6 bg-amber-100 rounded-xl transition-all duration-200 cursor-pointer hover:-translate-y-1.5 hover:drop-shadow-xl drop-shadow-black/50"
           >
             <div className="flex flex-col items-center gap-1">
               <div className="w-full text-center text-2xl font-medium">
